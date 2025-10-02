@@ -155,8 +155,8 @@
                 <h2 class="font-pixel text-3xl md:text-4xl text-center text-white neon-text-pink">Get In Touch</h2>
                 <div class="mt-10 max-w-2xl mx-auto">
                     <form action="https://formspree.io/f/mzzjggoj" method="POST" class="space-y-6">
-                        <input type="text" name="name" placeholder="Your Name" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white">
-                        <input type="email" name="email" placeholder="Your Email" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white">
+                        <input type="text" name="name" placeholder="Your Name" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white" required>
+                        <input type="email" name="email" placeholder="Your Email" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white" required>
                         <textarea name="message" placeholder="Your Message" rows="5" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white"></textarea>
                         <button type="submit" class="w-full font-pixel bg-pink-500 text-white py-3 px-6 rounded-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">Send Message</button>
                     </form>
@@ -182,9 +182,16 @@
 
     <div id="game-viewport" class="flex-grow bg-gray-900 relative flex items-center justify-center overflow-hidden">
          <p id="game-message" class="hidden absolute font-pixel text-2xl text-yellow-400 z-10"></p>
-         <div id="mobile-controls-container" class="absolute bottom-4 left-4 right-4 flex justify-between items-end md:hidden z-20 pointer-events-none">
+         
+         <!-- Split Controls Layout for Mobile -->
+         <div id="mobile-controls-split" class="hidden md:hidden absolute bottom-4 left-4 right-4 z-20 flex justify-between items-end pointer-events-none">
             <div id="mobile-controls-left" class="pointer-events-auto"></div>
             <div id="mobile-controls-right" class="pointer-events-auto"></div>
+         </div>
+
+         <!-- Centered Controls Layout for Mobile -->
+         <div id="mobile-controls-center" class="hidden md:hidden absolute bottom-4 left-0 right-0 z-20 flex justify-center pointer-events-auto">
+            <!-- Centered controls go here -->
          </div>
     </div>
 
@@ -216,7 +223,8 @@
     const restartButton = document.getElementById('restart-button');
     const gameButtons = document.getElementById('game-buttons');
     const exitButton = document.getElementById('exit-button');
-    const mobileControlsContainer = document.getElementById('mobile-controls-container');
+    const mobileControlsSplit = document.getElementById('mobile-controls-split');
+    const mobileControlsCenter = document.getElementById('mobile-controls-center');
     const mobileControlsLeft = document.getElementById('mobile-controls-left');
     const mobileControlsRight = document.getElementById('mobile-controls-right');
 
@@ -300,8 +308,13 @@
         eventListeners = [];
         const canvas = gameViewport.querySelector('canvas');
         if(canvas) gameViewport.removeChild(canvas);
+        
+        mobileControlsSplit.classList.add('hidden');
+        mobileControlsCenter.classList.add('hidden');
         mobileControlsLeft.innerHTML = ''; 
         mobileControlsRight.innerHTML = '';
+        mobileControlsCenter.innerHTML = '';
+
         gameMessage.classList.add('hidden');
         scoreDisplay.textContent = '';
         activeGame = null;
@@ -315,16 +328,7 @@
     restartButton.addEventListener('click', () => {
         if (activeGame && typeof activeGame.init === 'function') {
             const gameIdToRestart = activeGame.id;
-            // A soft cleanup, don't hide the game view
-            clearInterval(gameLoopInterval);
-            eventListeners.forEach(({ target, type, listener }) => target.removeEventListener(type, listener));
-            eventListeners = [];
-            const canvas = gameViewport.querySelector('canvas');
-            if(canvas) gameViewport.removeChild(canvas);
-            mobileControlsLeft.innerHTML = '';
-            mobileControlsRight.innerHTML = '';
-            gameMessage.classList.add('hidden');
-            scoreDisplay.textContent = '';
+            cleanup();
             launchGame(gameIdToRestart);
         }
     });
@@ -396,12 +400,13 @@
                 const keyDir = { 'ArrowUp': 'up', 'ArrowDown': 'down', 'ArrowLeft': 'left', 'ArrowRight': 'right' };
                 if (keyDir[e.key]) { e.preventDefault(); changeDir(keyDir[e.key]); }
             });
-            mobileControlsLeft.innerHTML = `<div class="grid grid-cols-3 gap-2 w-48 opacity-75"><div></div>
+            mobileControlsCenter.classList.remove('hidden');
+            mobileControlsCenter.innerHTML = `<div class="grid grid-cols-3 gap-2 w-48 opacity-75"><div></div>
                 <button class="mobile-control-btn" data-dir="up">▲</button><div></div>
                 <button class="mobile-control-btn" data-dir="left">◄</button><div></div>
                 <button class="mobile-control-btn" data-dir="right">►</button><div></div>
                 <button class="mobile-control-btn" data-dir="down">▼</button><div></div></div>`;
-            document.querySelectorAll('#mobile-controls-left .mobile-control-btn').forEach(b => addListener(b, 'click', () => changeDir(b.dataset.dir)));
+            document.querySelectorAll('#mobile-controls-center .mobile-control-btn').forEach(b => addListener(b, 'click', () => changeDir(b.dataset.dir)));
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
         update() {
@@ -822,7 +827,9 @@
             mobileControlsRight.innerHTML = `<div class="opacity-75">
                 <button class="mobile-control-btn" data-key="Shift">🚀</button></div>`;
 
-            document.querySelectorAll('#mobile-controls-container .mobile-control-btn').forEach(b => {
+            mobileControlsSplit.classList.remove('hidden');
+
+            document.querySelectorAll('#mobile-controls-split .mobile-control-btn').forEach(b => {
                 addListener(b, 'touchstart', (e) => { e.preventDefault(); this.keys[b.dataset.key] = true; });
                 addListener(b, 'touchend', (e) => { e.preventDefault(); this.keys[b.dataset.key] = false; });
             });
@@ -1074,7 +1081,8 @@
             mobileControlsLeft.innerHTML = `<div class="flex items-center space-x-4 opacity-75">
                 <button class="mobile-control-btn" data-key="ArrowLeft">◄</button>
                 <button class="mobile-control-btn" data-key="ArrowRight">►</button></div>`;
-            document.querySelectorAll('#mobile-controls-left .mobile-control-btn').forEach(b => {
+            mobileControlsSplit.classList.remove('hidden');
+            document.querySelectorAll('#mobile-controls-split .mobile-control-btn').forEach(b => {
                 addListener(b, 'touchstart', (e) => { e.preventDefault(); this.keys[b.dataset.key] = true; });
                 addListener(b, 'touchend', (e) => { e.preventDefault(); this.keys[b.dataset.key] = false; });
             });
@@ -1167,12 +1175,13 @@
                 else if (e.key === 'ArrowUp' || e.key === ' ') jump();
             });
 
+            mobileControlsSplit.classList.remove('hidden');
             mobileControlsLeft.innerHTML = `<div class="flex items-center space-x-4 opacity-75">
                 <button class="mobile-control-btn" data-action="left">◄</button>
                 <button class="mobile-control-btn" data-action="right">►</button></div>`;
             mobileControlsRight.innerHTML = `<div class="opacity-75">
                 <button class="mobile-control-btn" data-action="jump">▲</button></div>`;
-             document.querySelectorAll('#mobile-controls-container .mobile-control-btn').forEach(b => {
+             document.querySelectorAll('#mobile-controls-split .mobile-control-btn').forEach(b => {
                 addListener(b, 'click', () => {
                     const action = b.dataset.action;
                     if (action === 'left') move(-1);
