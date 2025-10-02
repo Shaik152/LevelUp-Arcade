@@ -182,7 +182,7 @@
 
     <div id="game-viewport" class="flex-grow bg-gray-900 relative flex items-center justify-center overflow-hidden">
          <p id="game-message" class="hidden absolute font-pixel text-2xl text-yellow-400 z-10"></p>
-         <div id="mobile-controls-container" class="absolute bottom-4 left-4 right-4 flex justify-between items-end md:hidden z-20">
+         <div id="mobile-controls-container" class="absolute bottom-4 left-4 right-4 flex justify-between items-end md:hidden z-20 pointer-events-none">
             <div id="mobile-controls-left" class="pointer-events-auto"></div>
             <div id="mobile-controls-right" class="pointer-events-auto"></div>
          </div>
@@ -315,7 +315,16 @@
     restartButton.addEventListener('click', () => {
         if (activeGame && typeof activeGame.init === 'function') {
             const gameIdToRestart = activeGame.id;
-            cleanup();
+            // A soft cleanup, don't hide the game view
+            clearInterval(gameLoopInterval);
+            eventListeners.forEach(({ target, type, listener }) => target.removeEventListener(type, listener));
+            eventListeners = [];
+            const canvas = gameViewport.querySelector('canvas');
+            if(canvas) gameViewport.removeChild(canvas);
+            mobileControlsLeft.innerHTML = '';
+            mobileControlsRight.innerHTML = '';
+            gameMessage.classList.add('hidden');
+            scoreDisplay.textContent = '';
             launchGame(gameIdToRestart);
         }
     });
@@ -517,18 +526,25 @@
     class BubbleShooterGame extends Game {
         constructor() { super('bubble'); }
         init(isResize = false) {
-            this.COLS = 16; this.ROWS = 14;
-            this.bubbleRadius = this.canvas.width / (this.COLS * 2);
-            this.canvas.height = this.bubbleRadius * 2 * (this.ROWS + 1.5);
+            this.COLS = 16;
+            this.ROWS = 14;
+
+            const radiusX = this.canvas.width / (this.COLS * 2);
+            const radiusY = this.canvas.height / ((this.ROWS + 1.5) * 1.75);
+            this.bubbleRadius = Math.min(radiusX, radiusY);
+            
             this.launcher = { x: this.canvas.width / 2, y: this.canvas.height - this.bubbleRadius };
+            
             if (!isResize) {
                 this.grid = Array(this.ROWS).fill(0).map(() => Array(this.COLS).fill(null));
                 this.colors = ['#ef4444', '#3b82f6', '#22c55e', '#facc15', '#a855f7'];
                 this.currentBubble = null; this.nextBubble = null; this.shotBubble = null;
                 this.aimAngle = -Math.PI / 2;
                 this.score = 0; this.misses = 0; this.maxMisses = 5;
-                this.generateInitialGrid(); this.loadNextBubbles();
+                this.generateInitialGrid();
+                this.loadNextBubbles();
             }
+
             scoreDisplay.textContent = `SCORE: ${this.score}`;
             this.setupControls();
             clearInterval(gameLoopInterval);
@@ -595,7 +611,9 @@
                 for(let r=0; r < this.ROWS; r++) {
                     for(let c=0; c < this.COLS; c++) {
                         if(this.grid[r][c]) {
-                            const bubbleX = c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
+                            const gridWidth = this.COLS * this.bubbleRadius * 2;
+                            const offsetX = (this.canvas.width - gridWidth) / 2;
+                            const bubbleX = offsetX + c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
                             const bubbleY = r * this.bubbleRadius * 1.75 + this.bubbleRadius;
                             const dx = this.shotBubble.x - bubbleX;
                             const dy = this.shotBubble.y - bubbleY;
@@ -611,10 +629,13 @@
         }
         snapBubble() {
             let closest = { r: -1, c: -1, dist: Infinity };
+            const gridWidth = this.COLS * this.bubbleRadius * 2;
+            const offsetX = (this.canvas.width - gridWidth) / 2;
+
             for(let r=0; r < this.ROWS; r++) {
                 for(let c=0; c < this.COLS - (r % 2); c++) {
                     if(!this.grid[r][c]) {
-                        const cellX = c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
+                        const cellX = offsetX + c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
                         const cellY = r * this.bubbleRadius * 1.75 + this.bubbleRadius;
                         const dx = this.shotBubble.x - cellX;
                         const dy = this.shotBubble.y - cellY;
@@ -729,10 +750,14 @@
         }
         draw() {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            const gridWidth = this.COLS * this.bubbleRadius * 2;
+            const offsetX = (this.canvas.width - gridWidth) / 2;
+
+            // Bubbles
             this.grid.forEach((row, r) => {
                 row.forEach((bubble, c) => {
                     if (bubble) {
-                        const x = c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
+                        const x = offsetX + c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
                         const y = r * this.bubbleRadius * 1.75 + this.bubbleRadius;
                         this.ctx.fillStyle = bubble.color;
                         this.ctx.beginPath();
@@ -741,12 +766,14 @@
                     }
                 });
             });
+            // Launcher and bubbles
             const r = this.bubbleRadius;
             this.ctx.fillStyle = this.currentBubble.color;
             this.ctx.beginPath(); this.ctx.arc(this.launcher.x, this.launcher.y, r, 0, Math.PI*2); this.ctx.fill();
             this.ctx.fillStyle = this.nextBubble.color;
             this.ctx.beginPath(); this.ctx.arc(this.launcher.x - r * 3, this.launcher.y, r * 0.7, 0, Math.PI*2); this.ctx.fill();
             
+            // Aim line
             this.ctx.strokeStyle = 'white'; this.ctx.lineWidth = 2;
             this.ctx.beginPath(); this.ctx.moveTo(this.launcher.x, this.launcher.y);
             this.ctx.lineTo(this.launcher.x + Math.cos(this.aimAngle) * 50, this.launcher.y + Math.sin(this.aimAngle) * 50);
