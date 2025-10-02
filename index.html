@@ -21,181 +21,202 @@
         .contact-input:focus, .login-input:focus { background-color: rgba(255,255,255,0.1); border-color: #ff00bf; box-shadow: 0 0 10px #ff00bf; outline: none; }
         .footer-text { position: relative; font-family: 'Press Start 2P', cursive; color: #fff; text-shadow: 0 0 5px #ff00bf,0 0 10px #ff00bf; animation: lightning 3s infinite linear; }
         @keyframes lightning { 0%, 100% { text-shadow: 0 0 5px #ff00bf,0 0 10px #ff00bf; opacity: 1; } 50% { text-shadow: 0 0 20px #fff,0 0 30px #ff00bf,0 0 40px #ff00bf; opacity: 0.8; } }
+        /* Mobile control buttons */
+        .mobile-control-btn {
+            width: 60px; height: 60px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: white;
+            user-select: none; /* Prevents text selection on repeated taps */
+        }
+        .mobile-control-btn:active { background-color: rgba(255, 255, 255, 0.4); }
     </style>
 </head>
 <body class="overflow-x-hidden">
 
 <!-- Login Page -->
-<div id="login-page" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-90">
+<div id="login-page" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-90">
     <div class="glass-effect rounded-2xl p-8 text-center w-full max-w-md">
         <h1 class="font-pixel text-3xl md:text-4xl text-white neon-text-blue mb-6">LEVELUP</h1>
         <p class="text-gray-300 mb-8">Enter your name to start playing!</p>
-        <input type="text" id="player-name" placeholder="Your Name" class="login-input w-full p-4 rounded-lg text-center mb-6">
+        <input type="text" id="player-name" placeholder="Your Name" class="login-input w-full p-4 rounded-lg text-center mb-6 text-white">
         <button id="start-game-btn" class="w-full font-pixel bg-pink-500 text-white py-3 px-6 rounded-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">Start Gaming</button>
     </div>
 </div>
 
-<!-- Header -->
-<header id="main-header" class="glass-effect fixed top-0 left-0 right-0 z-50 hidden">
-    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-        <a href="#home" class="font-pixel text-xl md:text-2xl tracking-wider text-white neon-text-blue">LEVELUP</a>
-        <div class="hidden md:flex space-x-8">
-            <a href="#home" class="text-lg hover:text-pink-400 transition duration-300">Home</a>
-            <a href="#about" class="text-lg hover:text-pink-400 transition duration-300">About</a>
-            <a href="#contact" class="text-lg hover:text-pink-400 transition duration-300">Contact</a>
+<!-- Main Site Wrapper -->
+<div id="site-wrapper" class="hidden">
+    <!-- Header -->
+    <header id="main-header" class="glass-effect fixed top-0 left-0 right-0 z-40">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="font-pixel text-xl md:text-2xl tracking-wider text-white neon-text-blue">LEVELUP</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-lg hover:text-pink-400 transition duration-300">Home</a>
+                <a href="#about" class="text-lg hover:text-pink-400 transition duration-300">About</a>
+                <a href="#contact" class="text-lg hover:text-pink-400 transition duration-300">Contact</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#home" class="block py-2 text-center hover:bg-gray-800 rounded">Home</a>
+            <a href="#about" class="block py-2 text-center hover:bg-gray-800 rounded">About</a>
+            <a href="#contact" class="block py-2 text-center hover:bg-gray-800 rounded">Contact</a>
         </div>
-        <button id="mobile-menu-button" class="md:hidden text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-        </button>
-    </nav>
-    <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-        <a href="#home" class="block py-2 text-center hover:bg-gray-800 rounded">Home</a>
-        <a href="#about" class="block py-2 text-center hover:bg-gray-800 rounded">About</a>
-        <a href="#contact" class="block py-2 text-center hover:bg-gray-800 rounded">Contact</a>
+    </header>
+
+    <main id="main-content" class="pt-24">
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen bg-cover bg-center py-16">
+            <div class="container mx-auto px-6 text-center">
+                <div id="welcome-message" class="mb-4"></div>
+                <h1 class="font-pixel text-4xl md:text-6xl font-bold text-white neon-text-pink">Game On!</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">Play smooth, retro-inspired games. Choose your challenge below.</p>
+                <p class="mt-6 font-pixel text-lg text-cyan-400 neon-text-blue animate-pulse">Your high score awaits!</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-12">
+
+                    <!-- Game Cards -->
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path fill="none" stroke="#ff00bf" stroke-width="4" d="M60 100 L160 100 L160 50 L80 50 L80 80 L120 80"></path><circle cx="50" cy="100" r="5" fill="#ff00bf"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Snake</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Eat, grow, survive. OG retro king.</p>
+                        <button onclick="launchGame('snake')" class="play-button mt-2 font-pixel bg-pink-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M50 30 H 150 M50 75 H 150 M50 120 H 150 M50 30 V 120 M100 30 V 120 M150 30 V 120" stroke="#00ffff" stroke-width="4"></path><circle cx="75" cy="52.5" r="10" fill="#00ffff"></circle><path d="M115 90 L135 110 M135 90 L115 110" stroke="#fff" stroke-width="4"></path></svg>
+                        <h3 class="font-pixel text-xl text-white">Tic Tac Toe</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Get three in a row to win!</p>
+                        <button onclick="launchGame('tictactoe')" class="play-button mt-2 font-pixel bg-cyan-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><circle cx="100" cy="40" r="15" fill="#ef4444"></circle><circle cx="80" cy="70" r="15" fill="#3b82f6"></circle><circle cx="120" cy="70" r="15" fill="#22c55e"></circle><path d="M100 140 L80 110 L120 110 Z" fill="#fff"></path></svg>
+                        <h3 class="font-pixel text-xl text-white">Bubble Shooter</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Match 3+ bubbles to pop them!</p>
+                        <button onclick="launchGame('bubble')" class="play-button mt-2 font-pixel bg-sky-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+                    
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M60 120 L140 120 L130 100 L70 100 Z" fill="#ffff00"></path><path d="M80 100 L120 100 L110 80 L90 80 Z" fill="#a1a1aa"></path></svg>
+                        <h3 class="font-pixel text-xl text-white">Car Racing</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Speed through lanes. Hold Shift to boost!</p>
+                        <button onclick="launchGame('car')" class="play-button mt-2 font-pixel bg-yellow-500 text-black py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><rect x="30" y="50" width="10" height="50" fill="#0095DD"></rect><rect x="160" y="50" width="10" height="50" fill="#fff"></rect><circle cx="100" cy="75" r="8" fill="#fff"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Pong</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Classic pong. Bounce your way to victory.</p>
+                        <button onclick="launchGame('pong')" class="play-button mt-2 font-pixel bg-blue-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><rect x="60" y="120" width="80" height="10" fill="#A78BFA"></rect><circle cx="100" cy="100" r="8" fill="#A78BFA"></circle><rect x="20" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="60" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="100" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="140" y="30" width="30" height="15" fill="#A78BFA"></rect></svg>
+                        <h3 class="font-pixel text-xl text-white">Breakout</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Destroy all bricks and beat the level.</p>
+                        <button onclick="launchGame('breakout')" class="play-button mt-2 font-pixel bg-purple-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+                    
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M40 120 L80 80 L120 100 L160 70" stroke="#fb923c" stroke-width="4" fill="none"></path><circle cx="60" cy="110" r="10" fill="#fb923c"></circle><circle cx="140" cy="110" r="10" fill="#fb923c"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Bike Racing</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Wheelies, jumps, adrenaline — feel the speed.</p>
+                        <button onclick="launchGame('bikerace')" class="play-button mt-2 font-pixel bg-orange-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+                    
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M100 20 L130 50 L100 80 L70 50 Z" fill="#f43f5e"></path><path d="M50 70 L80 100 L50 130 L20 100 Z" fill="#3b82f6"></path><circle cx="100" cy="100" r="10" fill="#facc15"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Temple Run</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Run, jump, and slide to survive!</p>
+                        <button onclick="launchGame('templerun')" class="play-button mt-2 font-pixel bg-rose-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="font-pixel text-3xl md:text-4xl text-center text-white neon-text-blue">About LEVELUP Arcade</h2>
+                <div class="mt-10 max-w-4xl mx-auto glass-effect rounded-2xl p-6 space-y-4 text-gray-300 text-center">
+                    <p>LEVELUP Arcade is your one-stop retro gaming hub. We've recreated the classics with a modern, smooth feel. No downloads, just pure, instant fun. Ready to play?</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-black bg-opacity-20">
+            <div class="container mx-auto px-6">
+                <h2 class="font-pixel text-3xl md:text-4xl text-center text-white neon-text-pink">Get In Touch</h2>
+                <div class="mt-10 max-w-2xl mx-auto">
+                    <form action="https://formspree.io/f/mzzjggoj" method="POST" class="space-y-6">
+                        <input type="text" name="name" placeholder="Your Name" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white">
+                        <input type="email" name="email" placeholder="Your Email" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white">
+                        <textarea name="message" placeholder="Your Message" rows="5" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white"></textarea>
+                        <button type="submit" class="w-full font-pixel bg-pink-500 text-white py-3 px-6 rounded-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 text-center">
+        <p class="footer-text">Created with love by "Shaik Suleman"</p>
+    </footer>
+</div>
+
+
+<!-- Fullscreen Game View -->
+<div id="game-view" class="hidden fixed inset-0 bg-black z-50 flex flex-col p-4">
+    <div class="flex-shrink-0 flex justify-between items-center mb-4">
+        <h2 id="game-title" class="font-pixel text-xl md:text-3xl text-white"></h2>
+        <div id="score-display" class="font-pixel text-lg text-white"></div>
+        <button id="exit-button" class="font-pixel bg-red-500 text-white py-2 px-4 rounded-lg">Exit</button>
     </div>
-</header>
 
-<main id="main-content" class="pt-24 hidden">
-    <!-- Home Section -->
-    <section id="home" class="min-h-screen bg-cover bg-center py-16">
-        <div class="container mx-auto px-6 text-center">
-            <div id="welcome-message" class="mb-4"></div>
-            <h1 class="font-pixel text-4xl md:text-6xl font-bold text-white neon-text-pink">Game On!</h1>
-            <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">Play smooth, retro-inspired games. Choose your challenge below.</p>
-            <p class="mt-6 font-pixel text-lg text-cyan-400 neon-text-blue animate-pulse">Your high score awaits!</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-12">
+    <div id="game-viewport" class="flex-grow bg-gray-900 rounded-lg relative flex items-center justify-center">
+         <p id="game-message" class="hidden absolute font-pixel text-2xl text-yellow-400 z-10"></p>
+    </div>
 
-                <!-- Game Cards -->
-                <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><path fill="none" stroke="#ff00bf" stroke-width="4" d="M60 100 L160 100 L160 50 L80 50 L80 80 L120 80"></path><circle cx="50" cy="100" r="5" fill="#ff00bf"></circle></svg>
-                    <h3 class="font-pixel text-xl text-white">Snake</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Eat, grow, survive. OG retro king.</p>
-                    <button onclick="launchGame('snake')" class="play-button mt-2 font-pixel bg-pink-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-
-                <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><path d="M50 30 H 150 M50 75 H 150 M50 120 H 150 M50 30 V 120 M100 30 V 120 M150 30 V 120" stroke="#00ffff" stroke-width="4"></path><circle cx="75" cy="52.5" r="10" fill="#00ffff"></circle><path d="M115 90 L135 110 M135 90 L115 110" stroke="#fff" stroke-width="4"></path></svg>
-                    <h3 class="font-pixel text-xl text-white">Tic Tac Toe 9x9</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Get five in a row to win!</p>
-                    <button onclick="launchGame('tictactoe')" class="play-button mt-2 font-pixel bg-cyan-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-
-                <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><circle cx="100" cy="40" r="15" fill="#ef4444"></circle><circle cx="80" cy="70" r="15" fill="#3b82f6"></circle><circle cx="120" cy="70" r="15" fill="#22c55e"></circle><path d="M100 140 L80 110 L120 110 Z" fill="#fff"></path></svg>
-                    <h3 class="font-pixel text-xl text-white">Bubble Shooter</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Match 3+ bubbles to pop them!</p>
-                    <button onclick="launchGame('bubble')" class="play-button mt-2 font-pixel bg-sky-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-                
-                 <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><path d="M60 120 L140 120 L130 100 L70 100 Z" fill="#ffff00"></path><path d="M80 100 L120 100 L110 80 L90 80 Z" fill="#a1a1aa"></path></svg>
-                    <h3 class="font-pixel text-xl text-white">Car Racing</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Speed through lanes. Hold Shift to boost!</p>
-                    <button onclick="launchGame('car')" class="play-button mt-2 font-pixel bg-yellow-500 text-black py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-
-                <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><rect x="30" y="50" width="10" height="50" fill="#0095DD"></rect><rect x="160" y="50" width="10" height="50" fill="#fff"></rect><circle cx="100" cy="75" r="8" fill="#fff"></circle></svg>
-                    <h3 class="font-pixel text-xl text-white">Pong</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Classic pong. Bounce your way to victory.</p>
-                    <button onclick="launchGame('pong')" class="play-button mt-2 font-pixel bg-blue-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-
-                <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><rect x="60" y="120" width="80" height="10" fill="#A78BFA"></rect><circle cx="100" cy="100" r="8" fill="#A78BFA"></circle><rect x="20" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="60" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="100" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="140" y="30" width="30" height="15" fill="#A78BFA"></rect></svg>
-                    <h3 class="font-pixel text-xl text-white">Breakout</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Destroy all bricks and beat the level.</p>
-                    <button onclick="launchGame('breakout')" class="play-button mt-2 font-pixel bg-purple-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-                 
-                <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><path d="M40 120 L80 80 L120 100 L160 70" stroke="#fb923c" stroke-width="4" fill="none"></path><circle cx="60" cy="110" r="10" fill="#fb923c"></circle><circle cx="140" cy="110" r="10" fill="#fb923c"></circle></svg>
-                    <h3 class="font-pixel text-xl text-white">Bike Racing</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Wheelies, jumps, adrenaline — feel the speed.</p>
-                    <button onclick="launchGame('bikerace')" class="play-button mt-2 font-pixel bg-orange-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-                
-                <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
-                    <svg viewBox="0 0 200 150" class="game-card-image"><path d="M100 20 L130 50 L100 80 L70 50 Z" fill="#f43f5e"></path><path d="M50 70 L80 100 L50 130 L20 100 Z" fill="#3b82f6"></path><circle cx="100" cy="100" r="10" fill="#facc15"></circle></svg>
-                    <h3 class="font-pixel text-xl text-white">Temple Run</h3>
-                    <p class="text-gray-400 text-sm flex-grow">Run, jump, and slide to survive!</p>
-                    <button onclick="launchGame('templerun')" class="play-button mt-2 font-pixel bg-rose-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
-                </div>
-
-            </div>
+    <div class="flex-shrink-0 mt-4 flex justify-center items-center">
+        <div id="game-buttons" class="hidden items-center space-x-4">
+            <button id="restart-button" class="font-pixel bg-cyan-500 text-white py-2 px-4 rounded-lg">Restart</button>
         </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="py-20">
-        <div class="container mx-auto px-6">
-            <h2 class="font-pixel text-3xl md:text-4xl text-center text-white neon-text-blue">About LEVELUP Arcade</h2>
-            <div class="mt-10 max-w-4xl mx-auto glass-effect rounded-2xl p-6 space-y-4 text-gray-300 text-center">
-                 <p>LEVELUP Arcade is your one-stop retro gaming hub. We've recreated the classics with a modern, smooth feel. No downloads, just pure, instant fun. Ready to play?</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-black bg-opacity-20">
-        <div class="container mx-auto px-6">
-            <h2 class="font-pixel text-3xl md:text-4xl text-center text-white neon-text-pink">Get In Touch</h2>
-            <div class="mt-10 max-w-2xl mx-auto">
-                <form action="#" method="POST" class="space-y-6">
-                    <input type="text" placeholder="Your Name" class="contact-input w-full p-4 rounded-lg focus:outline-none">
-                    <input type="email" placeholder="Your Email" class="contact-input w-full p-4 rounded-lg focus:outline-none">
-                    <textarea placeholder="Your Message" rows="5" class="contact-input w-full p-4 rounded-lg focus:outline-none"></textarea>
-                    <button type="submit" class="w-full font-pixel bg-pink-500 text-white py-3 px-6 rounded-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">Send Message</button>
-                </form>
-            </div>
-        </div>
-    </section>
-</main>
-
-<!-- Footer -->
-<footer class="py-6 text-center">
-    <p class="footer-text">Created with love by "Shaik Suleman"</p>
-</footer>
-
-<!-- Game Modal -->
-<div id="game-modal" class="hidden fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
-    <div id="game-container" class="glass-effect rounded-2xl p-4 md:p-6 w-full max-w-3xl text-center relative">
-        <button onclick="closeGame()" class="absolute -top-3 -right-3 bg-white text-black rounded-full h-8 w-8 font-bold text-xl flex items-center justify-center leading-none">&times;</button>
-        <h2 id="game-title" class="font-pixel text-2xl md:text-3xl mb-4 text-white"></h2>
-        <div id="game-viewport" class="bg-gray-900 rounded-lg aspect-video flex items-center justify-center relative">
-             <p id="game-message" class="hidden absolute font-pixel text-2xl text-yellow-400 z-10"></p>
-        </div>
-        <div class="mt-4 flex flex-col md:flex-row items-center justify-between min-h-[40px]">
-            <div id="score-display" class="font-pixel text-lg text-white mb-4 md:mb-0"></div>
-            <div id="mobile-controls" class="hidden items-center justify-center space-x-2"></div>
-            <div id="game-buttons" class="hidden items-center space-x-4">
-                <button id="restart-button" class="font-pixel bg-cyan-500 text-white py-2 px-4 rounded-lg">Restart</button>
-                <button id="exit-button" class="font-pixel bg-red-500 text-white py-2 px-4 rounded-lg">Exit</button>
-            </div>
+        <div id="mobile-controls-container" class="md:hidden">
+            <!-- Mobile controls will be injected here -->
         </div>
     </div>
 </div>
+
 
 <script>
     // --- UI Elements ---
     const loginPage = document.getElementById('login-page');
     const playerNameInput = document.getElementById('player-name');
     const startGameBtn = document.getElementById('start-game-btn');
-    const mainHeader = document.getElementById('main-header');
-    const mainContent = document.getElementById('main-content');
+    const siteWrapper = document.getElementById('site-wrapper');
     const welcomeMessageContainer = document.getElementById('welcome-message');
 
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
-    const gameModal = document.getElementById('game-modal');
+    
+    // Game View elements
+    const gameView = document.getElementById('game-view');
     const gameTitle = document.getElementById('game-title');
     const gameViewport = document.getElementById('game-viewport');
     const gameMessage = document.getElementById('game-message');
     const scoreDisplay = document.getElementById('score-display');
     const restartButton = document.getElementById('restart-button');
-    const mobileControls = document.getElementById('mobile-controls');
     const gameButtons = document.getElementById('game-buttons');
     const exitButton = document.getElementById('exit-button');
+    const mobileControlsContainer = document.getElementById('mobile-controls-container');
+
 
     // --- Game State ---
     let activeGame = null;
@@ -207,8 +228,7 @@
         const playerName = playerNameInput.value.trim();
         if (playerName) {
             loginPage.classList.add('hidden');
-            mainHeader.classList.remove('hidden');
-            mainContent.classList.remove('hidden');
+            siteWrapper.classList.remove('hidden');
             welcomeMessageContainer.innerHTML = `<h2 class="font-pixel text-2xl text-white neon-text-blue">Welcome, ${playerName}!</h2>`;
         } else {
             playerNameInput.placeholder = "Please enter a name!";
@@ -231,12 +251,12 @@
     function launchGame(gameId) {
         cleanup();
         
-        gameModal.classList.remove('hidden');
-        gameModal.classList.add('flex');
+        siteWrapper.classList.add('hidden');
+        gameView.classList.remove('hidden');
 
         const gameMap = {
             'snake': { name: "Snake", class: SnakeGame },
-            'tictactoe': { name: "Tic Tac Toe 9x9", class: TicTacToeGame },
+            'tictactoe': { name: "Tic Tac Toe", class: TicTacToeGame },
             'bubble': { name: "Bubble Shooter", class: BubbleShooterGame },
             'car': { name: "Car Racing", class: CarRacingGame },
             'pong': { name: "Pong", class: PongGame },
@@ -258,7 +278,8 @@
     
     // --- Game Cleanup & Controls ---
     function closeGame() {
-        gameModal.classList.add('hidden');
+        gameView.classList.add('hidden');
+        siteWrapper.classList.remove('hidden');
         cleanup();
     }
     
@@ -266,8 +287,8 @@
         clearInterval(gameLoopInterval);
         eventListeners.forEach(({ target, type, listener }) => target.removeEventListener(type, listener));
         eventListeners = [];
-        gameViewport.innerHTML = '';
-        mobileControls.innerHTML = '';
+        gameViewport.innerHTML = ''; // Clears the canvas
+        mobileControlsContainer.innerHTML = ''; // Clears mobile buttons
         gameMessage.classList.add('hidden');
         scoreDisplay.textContent = '';
         activeGame = null;
@@ -280,9 +301,9 @@
 
     restartButton.addEventListener('click', () => {
         if (activeGame && typeof activeGame.init === 'function') {
-            const gameIdToRestart = activeGame.id; // Store ID before cleanup
+            const gameIdToRestart = activeGame.id;
             cleanup();
-            launchGame(gameIdToRestart); // Use stored ID
+            launchGame(gameIdToRestart);
         }
     });
     exitButton.addEventListener('click', closeGame);
@@ -296,11 +317,18 @@
             gameViewport.appendChild(this.canvas);
             this.resizeCanvas();
             this.gameOver = false;
+             // Resize canvas whenever the window resizes
+            this.resizeListener = () => this.resizeCanvas();
+            addListener(window, 'resize', this.resizeListener);
         }
         resizeCanvas() {
             const viewportRect = gameViewport.getBoundingClientRect();
             this.canvas.width = viewportRect.width;
             this.canvas.height = viewportRect.height;
+             if (typeof this.init === 'function' && activeGame === this) {
+                // If a game is active, re-initialize it to adapt to new size
+                this.init();
+            }
         }
         endGame(message) {
             this.gameOver = true;
@@ -342,9 +370,12 @@
                 const keyDir = { 'ArrowUp': 'up', 'ArrowDown': 'down', 'ArrowLeft': 'left', 'ArrowRight': 'right' };
                 if (keyDir[e.key]) changeDir(keyDir[e.key]);
             });
-            mobileControls.innerHTML = `<div class="grid grid-cols-3 gap-2"><div></div><button class="control-btn bg-pink-500 text-white rounded-full h-12 w-12" data-dir="up">▲</button><div></div><button class="control-btn bg-pink-500 text-white rounded-full h-12 w-12" data-dir="left">◄</button><div></div><button class="control-btn bg-pink-500 text-white rounded-full h-12 w-12" data-dir="right">►</button><div></div><button class="control-btn bg-pink-500 text-white rounded-full h-12 w-12" data-dir="down">▼</button><div></div></div>`;
-            mobileControls.classList.remove('hidden');
-            document.querySelectorAll('.control-btn').forEach(b => addListener(b, 'click', () => changeDir(b.dataset.dir)));
+            mobileControlsContainer.innerHTML = `<div class="grid grid-cols-3 gap-2 w-48"><div/>
+                <button class="mobile-control-btn" data-dir="up">▲</button><div/>
+                <button class="mobile-control-btn" data-dir="left">◄</button><div/>
+                <button class="mobile-control-btn" data-dir="right">►</button><div/>
+                <button class="mobile-control-btn" data-dir="down">▼</button><div/></div>`;
+            document.querySelectorAll('.mobile-control-btn').forEach(b => addListener(b, 'click', () => changeDir(b.dataset.dir)));
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
         update() {
@@ -383,13 +414,12 @@
     }
     
     // =======================
-    // === Tic Tac Toe GAME (9x9) ===
+    // === Tic Tac Toe GAME (3x3) ===
     // =======================
     class TicTacToeGame extends Game {
         constructor() { super('tictactoe'); }
         init() {
-            this.gridSize = 9;
-            this.winCount = 5;
+            this.gridSize = 3;
             this.board = Array(this.gridSize * this.gridSize).fill(null);
             this.currentPlayer = 'X';
             this.cellSize = Math.min(this.canvas.width, this.canvas.height) / this.gridSize;
@@ -407,11 +437,10 @@
                 const y = e.clientY - rect.top;
                 const col = Math.floor(x / this.cellSize);
                 const row = Math.floor(y / this.cellSize);
-                if (col >= this.gridSize || row >= this.gridSize) return;
                 const index = row * this.gridSize + col;
                 if (this.board[index] === null) {
                     this.board[index] = this.currentPlayer;
-                    if (this.checkWinner(row, col)) {
+                    if (this.checkWinner()) {
                         scoreDisplay.textContent = ``;
                         this.endGame(`Player ${this.currentPlayer} Wins!`);
                     } else if (!this.board.includes(null)) {
@@ -425,50 +454,37 @@
                 }
             });
         }
-        checkWinner(row, col) {
-            const player = this.board[row * this.gridSize + col];
-            if (!player) return false;
-            
-            const directions = [[1, 0], [0, 1], [1, 1], [1, -1]]; // H, V, D\, D/
-            for (const [dr, dc] of directions) {
-                let count = 1;
-                for (let i = 1; i < this.winCount; i++) {
-                    const r = row + i * dr;
-                    const c = col + i * dc;
-                    if (r < 0 || r >= this.gridSize || c < 0 || c >= this.gridSize || this.board[r * this.gridSize + c] !== player) break;
-                    count++;
+        checkWinner() {
+            const lines = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ];
+            for (let i = 0; i < lines.length; i++) {
+                const [a, b, c] = lines[i];
+                if (this.board[a] && this.board[a] === this.board[b] && this.board[a] === this.board[c]) {
+                    return true;
                 }
-                for (let i = 1; i < this.winCount; i++) {
-                    const r = row - i * dr;
-                    const c = col - i * dc;
-                    if (r < 0 || r >= this.gridSize || c < 0 || c >= this.gridSize || this.board[r * this.gridSize + c] !== player) break;
-                    count++;
-                }
-                if (count >= this.winCount) return true;
             }
             return false;
         }
         draw() {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.strokeStyle = '#fff'; this.ctx.lineWidth = 2;
+            this.ctx.strokeStyle = '#fff'; this.ctx.lineWidth = 4;
             for (let i = 1; i < this.gridSize; i++) {
                 this.ctx.beginPath();
                 this.ctx.moveTo(i * this.cellSize, 0); this.ctx.lineTo(i * this.cellSize, this.canvas.height);
                 this.ctx.moveTo(0, i * this.cellSize); this.ctx.lineTo(this.canvas.width, i * this.cellSize);
                 this.ctx.stroke();
             }
-            const pieceSize = this.cellSize * 0.35;
+            const pieceSize = this.cellSize * 0.25;
             this.board.forEach((val, i) => {
                 const x = (i % this.gridSize) * this.cellSize + this.cellSize / 2;
                 const y = Math.floor(i / this.gridSize) * this.cellSize + this.cellSize / 2;
                 if (val === 'X') {
-                    this.ctx.strokeStyle = '#fff'; this.ctx.lineWidth = 3;
+                    this.ctx.strokeStyle = '#fff'; this.ctx.lineWidth = 5;
                     this.ctx.beginPath();
                     this.ctx.moveTo(x - pieceSize, y - pieceSize); this.ctx.lineTo(x + pieceSize, y + pieceSize);
                     this.ctx.moveTo(x + pieceSize, y - pieceSize); this.ctx.lineTo(x - pieceSize, y + pieceSize);
                     this.ctx.stroke();
                 } else if (val === 'O') {
-                    this.ctx.strokeStyle = '#00ffff'; this.ctx.lineWidth = 3;
+                    this.ctx.strokeStyle = '#00ffff'; this.ctx.lineWidth = 5;
                     this.ctx.beginPath(); this.ctx.arc(x, y, pieceSize, 0, Math.PI * 2); this.ctx.stroke();
                 }
             });
@@ -515,14 +531,16 @@
             this.nextBubble = { color: available[Math.floor(Math.random() * available.length)] };
         }
         setupControls() {
-            addListener(this.canvas, 'mousemove', e => {
-                if (this.gameOver) return;
+            const handleAim = (e) => {
+                 if (this.gameOver) return;
                 const rect = this.canvas.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                const mouseX = clientX - rect.left;
+                const mouseY = clientY - rect.top;
                 this.aimAngle = Math.atan2(mouseY - this.launcher.y, mouseX - this.launcher.x);
-            });
-            addListener(this.canvas, 'click', () => {
+            }
+             const handleShoot = () => {
                 if (this.gameOver || this.shotBubble) return;
                 this.shotBubble = {
                     x: this.launcher.x, y: this.launcher.y,
@@ -531,7 +549,12 @@
                     dy: Math.sin(this.aimAngle) * 10,
                 };
                 this.loadNextBubbles();
-            });
+            };
+
+            addListener(this.canvas, 'mousemove', handleAim);
+            addListener(this.canvas, 'touchmove', handleAim);
+            addListener(this.canvas, 'click', handleShoot);
+            addListener(this.canvas, 'touchend', handleShoot);
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
         update() {
@@ -670,10 +693,11 @@
         }
         getNeighbors(r, c) {
              const offset = (r % 2) ? 1 : -1;
+             const isEven = r % 2 === 0;
              const neighbors = [
-                { r: r, c: c - 1 }, { r: r, c: c + 1 },
-                { r: r - 1, c: c }, { r: r + 1, c: c },
-                { r: r + offset, c: c }, { r: r + offset, c: c + (r % 2 ? 0 : -1) * -1 }
+                {r: r, c: c - 1}, {r: r, c: c + 1}, // Left, Right
+                {r: r - 1, c: c - (isEven ? 1:0)}, {r: r - 1, c: c + (isEven ? 0:1)}, // Top-left, Top-right
+                {r: r + 1, c: c - (isEven ? 1:0)}, {r: r + 1, c: c + (isEven ? 0:1)}  // Bottom-left, Bottom-right
              ];
              return neighbors.filter(n => n.r >= 0 && n.r < this.ROWS && n.c >= 0 && n.c < this.COLS - (n.r % 2));
         }
@@ -747,6 +771,15 @@
         setupControls() {
             addListener(document, 'keydown', e => this.keys[e.key] = true);
             addListener(document, 'keyup', e => this.keys[e.key] = false);
+
+            mobileControlsContainer.innerHTML = `<div class="flex items-center space-x-8">
+                <button class="mobile-control-btn" data-key="ArrowLeft">◄</button>
+                <button class="mobile-control-btn" data-key="ArrowRight">►</button>
+                <button class="mobile-control-btn" data-key="Shift">🚀</button></div>`;
+            document.querySelectorAll('.mobile-control-btn').forEach(b => {
+                addListener(b, 'touchstart', (e) => { e.preventDefault(); this.keys[b.dataset.key] = true; });
+                addListener(b, 'touchend', (e) => { e.preventDefault(); this.keys[b.dataset.key] = false; });
+            });
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
         update() {
@@ -807,10 +840,13 @@
             gameLoopInterval = setInterval(() => this.loop(), 1000/60);
         }
         setupControls() {
-            addListener(this.canvas, 'mousemove', e => {
+            const movePaddle = (e) => {
                 const rect = this.canvas.getBoundingClientRect();
-                this.player.y = e.clientY - rect.top - this.player.height / 2;
-            });
+                const clientY = e.clientY || e.touches[0].clientY;
+                this.player.y = clientY - rect.top - this.player.height / 2;
+            }
+            addListener(this.canvas, 'mousemove', movePaddle);
+            addListener(this.canvas, 'touchmove', movePaddle);
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
         update() {
@@ -880,11 +916,16 @@
             }
         }
         setupControls() {
-            addListener(this.canvas, 'mousemove', e => {
+             const movePaddle = (e) => {
                 const rect = this.canvas.getBoundingClientRect();
-                const newX = e.clientX - rect.left;
-                if (newX > this.paddle.width / 2 && newX < this.canvas.width - this.paddle.width / 2) this.paddle.x = newX - this.paddle.width / 2;
-            });
+                const clientX = e.clientX || e.touches[0].clientX;
+                const newX = clientX - rect.left;
+                if (newX > this.paddle.width / 2 && newX < this.canvas.width - this.paddle.width / 2) {
+                    this.paddle.x = newX - this.paddle.width / 2;
+                }
+            }
+            addListener(this.canvas, 'mousemove', movePaddle);
+            addListener(this.canvas, 'touchmove', movePaddle);
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
         update() {
@@ -966,6 +1007,14 @@
         setupControls() {
             addListener(document, 'keydown', e => this.keys[e.key] = true);
             addListener(document, 'keyup', e => this.keys[e.key] = false);
+
+            mobileControlsContainer.innerHTML = `<div class="flex items-center space-x-8">
+                <button class="mobile-control-btn" data-key="ArrowLeft">◄</button>
+                <button class="mobile-control-btn" data-key="ArrowRight">►</button></div>`;
+            document.querySelectorAll('.mobile-control-btn').forEach(b => {
+                addListener(b, 'touchstart', (e) => { e.preventDefault(); this.keys[b.dataset.key] = true; });
+                addListener(b, 'touchend', (e) => { e.preventDefault(); this.keys[b.dataset.key] = false; });
+            });
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
         update() {
@@ -1038,12 +1087,25 @@
                 const newLane = this.player.lane + dir;
                 if(newLane >= -1 && newLane <= 1) this.player.lane = newLane;
             };
-            const jump = () => { if(!this.player.isJumping) this.player.isJumping = true; };
+            const jump = () => { if(!this.player.isJumping && !this.gameOver) this.player.isJumping = true; };
 
             addListener(document, 'keydown', e => {
                 if (e.key === 'ArrowLeft') move(-1);
                 else if (e.key === 'ArrowRight') move(1);
                 else if (e.key === 'ArrowUp' || e.key === ' ') jump();
+            });
+
+            mobileControlsContainer.innerHTML = `<div class="flex items-center space-x-8">
+                <button class="mobile-control-btn" data-action="left">◄</button>
+                <button class="mobile-control-btn" data-action="jump">▲</button>
+                <button class="mobile-control-btn" data-action="right">►</button></div>`;
+             document.querySelectorAll('.mobile-control-btn').forEach(b => {
+                addListener(b, 'click', () => {
+                    const action = b.dataset.action;
+                    if (action === 'left') move(-1);
+                    else if (action === 'right') move(1);
+                    else if (action === 'jump') jump();
+                });
             });
         }
         loop() { if (!this.gameOver) { this.update(); this.draw(); } }
@@ -1079,7 +1141,7 @@
             if(onGap && !this.player.isJumping) return this.endGame("GAME OVER");
 
             this.obstacles.forEach(o => {
-                 if (this.player.lane === o.lane && this.player.y < o.y + o.height && this.player.y + this.player.height > o.y) {
+                 if (this.player.lane === o.lane && this.player.y < o.y + o.height && this.player.y + this.player.height > o.y && !this.player.isJumping) {
                      return this.endGame("GAME OVER");
                  }
             });
