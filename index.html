@@ -182,7 +182,7 @@
 
     <div id="game-viewport" class="flex-grow bg-gray-900 relative flex items-center justify-center overflow-hidden">
          <p id="game-message" class="hidden absolute font-pixel text-2xl text-yellow-400 z-10"></p>
-         <div id="mobile-controls-container" class="absolute bottom-4 left-4 right-4 flex justify-between items-end md:hidden z-20 pointer-events-none">
+         <div id="mobile-controls-container" class="absolute bottom-4 left-4 right-4 flex justify-between items-end md:hidden z-20">
             <div id="mobile-controls-left" class="pointer-events-auto"></div>
             <div id="mobile-controls-right" class="pointer-events-auto"></div>
          </div>
@@ -245,6 +245,16 @@
         }
     });
 
+    // --- Helper Functions ---
+    function showGameMessage(message, duration = 1500) {
+        gameMessage.textContent = message;
+        gameMessage.classList.remove('hidden');
+        setTimeout(() => {
+            if (gameMessage.textContent === message) {
+                gameMessage.classList.add('hidden');
+            }
+        }, duration);
+    }
 
     // --- Mobile Menu ---
     mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
@@ -288,9 +298,8 @@
         clearInterval(gameLoopInterval);
         eventListeners.forEach(({ target, type, listener }) => target.removeEventListener(type, listener));
         eventListeners = [];
-        if (gameViewport.firstChild) {
-             gameViewport.removeChild(gameViewport.firstChild);
-        }
+        const canvas = gameViewport.querySelector('canvas');
+        if(canvas) gameViewport.removeChild(canvas);
         mobileControlsLeft.innerHTML = ''; 
         mobileControlsRight.innerHTML = '';
         gameMessage.classList.add('hidden');
@@ -306,15 +315,7 @@
     restartButton.addEventListener('click', () => {
         if (activeGame && typeof activeGame.init === 'function') {
             const gameIdToRestart = activeGame.id;
-            // A soft cleanup, don't hide the game view
-            clearInterval(gameLoopInterval);
-            eventListeners.forEach(({ target, type, listener }) => target.removeEventListener(type, listener));
-            eventListeners = [];
-            gameViewport.innerHTML = '';
-            mobileControlsLeft.innerHTML = '';
-            mobileControlsRight.innerHTML = '';
-            gameMessage.classList.add('hidden');
-            scoreDisplay.textContent = '';
+            cleanup();
             launchGame(gameIdToRestart);
         }
     });
@@ -326,9 +327,9 @@
             this.id = id;
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
-            // Remove previous canvas if it exists
-            if (gameViewport.firstChild && gameViewport.firstChild.tagName === 'CANVAS') {
-                gameViewport.removeChild(gameViewport.firstChild);
+            const existingCanvas = gameViewport.querySelector('canvas');
+            if (existingCanvas) {
+                gameViewport.removeChild(existingCanvas);
             }
             gameViewport.insertBefore(this.canvas, gameViewport.firstChild);
             this.resizeCanvas();
@@ -408,6 +409,7 @@
                     this.speed = Math.max(40, this.speed - 10);
                     clearInterval(gameLoopInterval);
                     gameLoopInterval = setInterval(() => this.loop(), this.speed);
+                    showGameMessage(`LEVEL ${this.level}!`);
                 }
                 scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
                 this.placeFood();
@@ -816,9 +818,10 @@
                 if (this.player.x < e.x + e.width && this.player.x + this.player.width > e.x && this.player.y < e.y + e.height && this.player.y + this.player.height > e.y) this.endGame("GAME OVER");
             });
             this.score++;
-            if (this.score > 0 && this.score % 500 === 0) {
+            if (this.score > 0 && this.score % 500 === 0 && Math.floor(this.score/500)+1 > this.level) {
                 this.level++;
                 this.baseSpeed += 0.5;
+                showGameMessage(`LEVEL ${this.level}!`);
             }
             scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
         }
@@ -991,12 +994,8 @@
                             scoreDisplay.textContent = `SCORE: ${this.totalScore} | LEVEL: ${this.level}`;
                             if (this.levelScore === this.bricksOnLevel) {
                                 this.level++;
-                                gameMessage.textContent = `LEVEL ${this.level}!`;
-                                gameMessage.classList.remove('hidden');
-                                setTimeout(() => {
-                                    gameMessage.classList.add('hidden');
-                                    this.init(true);
-                                }, 1500);
+                                showGameMessage(`LEVEL ${this.level}!`);
+                                setTimeout(() => this.init(true), 1500);
                             }
                         }
                     }
@@ -1077,6 +1076,7 @@
              if (this.score > 0 && this.score % 500 === 0 && Math.floor(this.score/500) + 1 > this.level) {
                 this.level++;
                 this.baseSpeed += 0.5;
+                showGameMessage(`LEVEL ${this.level}!`);
             }
             scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
         }
@@ -1196,6 +1196,7 @@
             if (this.score > 0 && this.score % 1000 === 0 && Math.floor(this.score/1000)+1 > this.level) {
                 this.level++;
                 this.baseSpeed += 0.5;
+                showGameMessage(`LEVEL ${this.level}!`);
             }
             scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
         }
