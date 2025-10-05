@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEVELUP Arcade</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0d0d0d, #1a1a1a); color: #e0e0e0; }
+        .font-pixel { font-family: 'Press Start 2P', cursive; }
+        .glass-effect { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .neon-text-blue { text-shadow: 0 0 5px rgba(0,119,255,0.7), 0 0 10px rgba(0,119,255,0.7); }
+        .neon-text-pink { text-shadow: 0 0 5px rgba(255,0,191,0.7),0 0 10px rgba(255,0,191,0.7); }
+        .game-card { transition: all 0.3s ease-in-out; }
+        .game-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 0 25px rgba(255, 0, 191, 0.5); }
+        .game-card-image { width: 100%; height: 140px; object-fit: contain; border-radius: 0.5rem; margin-bottom: 1rem; padding: 1rem; background-color: rgba(0,0,0,0.3); }
+        .contact-input, .login-input { background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
+        .contact-input:focus, .login-input:focus { background-color: rgba(255,255,255,0.1); border-color: #ff00bf; box-shadow: 0 0 10px #ff00bf; outline: none; }
+        .footer-text { position: relative; font-family: 'Press Start 2P', cursive; color: #fff; text-shadow: 0 0 5px #ff00bf,0 0 10px #ff00bf; animation: lightning 3s infinite linear; }
+        @keyframes lightning { 0%, 100% { text-shadow: 0 0 5px #ff00bf,0 0 10px #ff00bf; opacity: 1; } 50% { text-shadow: 0 0 20px #fff,0 0 30px #ff00bf,0 0 40px #ff00bf; opacity: 0.8; } }
+        /* Mobile control buttons */
+        .mobile-control-btn {
+            width: 60px; height: 60px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; color: white;
+            user-select: none; /* Prevents text selection on repeated taps */
+        }
+        .mobile-control-btn:active { background-color: rgba(255, 255, 255, 0.4); }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+<!-- Login Page -->
+<div id="login-page" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-90">
+    <div class="glass-effect rounded-2xl p-8 text-center w-full max-w-md">
+        <h1 class="font-pixel text-3xl md:text-4xl text-white neon-text-blue mb-6">LEVELUP</h1>
+        <p class="text-gray-300 mb-8">Enter your name to start playing!</p>
+        <input type="text" id="player-name" placeholder="Your Name" class="login-input w-full p-4 rounded-lg text-center mb-6 text-white">
+        <button id="start-game-btn" class="w-full font-pixel bg-pink-500 text-white py-3 px-6 rounded-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">Start Gaming</button>
+    </div>
+</div>
+
+<!-- Main Site Wrapper -->
+<div id="site-wrapper" class="hidden">
+    <!-- Header -->
+    <header id="main-header" class="glass-effect fixed top-0 left-0 right-0 z-40">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="font-pixel text-xl md:text-2xl tracking-wider text-white neon-text-blue">LEVELUP</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="text-lg hover:text-pink-400 transition duration-300">Home</a>
+                <a href="#about" class="text-lg hover:text-pink-400 transition duration-300">About</a>
+                <a href="#contact" class="text-lg hover:text-pink-400 transition duration-300">Contact</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#home" class="block py-2 text-center hover:bg-gray-800 rounded">Home</a>
+            <a href="#about" class="block py-2 text-center hover:bg-gray-800 rounded">About</a>
+            <a href="#contact" class="block py-2 text-center hover:bg-gray-800 rounded">Contact</a>
+        </div>
+    </header>
+
+    <main id="main-content" class="pt-24">
+        <!-- Home Section -->
+        <section id="home" class="min-h-screen bg-cover bg-center py-16">
+            <div class="container mx-auto px-6 text-center">
+                <div id="welcome-message" class="mb-4"></div>
+                <h1 class="font-pixel text-4xl md:text-6xl font-bold text-white neon-text-pink">Game On!</h1>
+                <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">Play smooth, retro-inspired games. Choose your challenge below.</p>
+                <p class="mt-6 font-pixel text-lg text-cyan-400 neon-text-blue animate-pulse">Your high score awaits!</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mt-12">
+
+                    <!-- Game Cards -->
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path fill="none" stroke="#ff00bf" stroke-width="4" d="M60 100 L160 100 L160 50 L80 50 L80 80 L120 80"></path><circle cx="50" cy="100" r="5" fill="#ff00bf"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Snake</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Eat, grow, survive. OG retro king.</p>
+                        <button onclick="launchGame('snake')" class="play-button mt-2 font-pixel bg-pink-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M50 30 H 150 M50 75 H 150 M50 120 H 150 M50 30 V 120 M100 30 V 120 M150 30 V 120" stroke="#00ffff" stroke-width="4"></path><circle cx="75" cy="52.5" r="10" fill="#00ffff"></circle><path d="M115 90 L135 110 M135 90 L115 110" stroke="#fff" stroke-width="4"></path></svg>
+                        <h3 class="font-pixel text-xl text-white">Tic Tac Toe</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Get three in a row to win!</p>
+                        <button onclick="launchGame('tictactoe')" class="play-button mt-2 font-pixel bg-cyan-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><circle cx="100" cy="40" r="15" fill="#ef4444"></circle><circle cx="80" cy="70" r="15" fill="#3b82f6"></circle><circle cx="120" cy="70" r="15" fill="#22c55e"></circle><path d="M100 140 L80 110 L120 110 Z" fill="#fff"></path></svg>
+                        <h3 class="font-pixel text-xl text-white">Bubble Shooter</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Match 3+ bubbles to pop them!</p>
+                        <button onclick="launchGame('bubble')" class="play-button mt-2 font-pixel bg-sky-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+                    
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M60 120 L140 120 L130 100 L70 100 Z" fill="#ffff00"></path><path d="M80 100 L120 100 L110 80 L90 80 Z" fill="#a1a1aa"></path></svg>
+                        <h3 class="font-pixel text-xl text-white">Car Racing</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Speed through lanes. Hold Shift to boost!</p>
+                        <button onclick="launchGame('car')" class="play-button mt-2 font-pixel bg-yellow-500 text-black py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><rect x="30" y="50" width="10" height="50" fill="#0095DD"></rect><rect x="160" y="50" width="10" height="50" fill="#fff"></rect><circle cx="100" cy="75" r="8" fill="#fff"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Pong</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Classic pong. Bounce your way to victory.</p>
+                        <button onclick="launchGame('pong')" class="play-button mt-2 font-pixel bg-blue-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><rect x="60" y="120" width="80" height="10" fill="#A78BFA"></rect><circle cx="100" cy="100" r="8" fill="#A78BFA"></circle><rect x="20" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="60" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="100" y="30" width="30" height="15" fill="#A78BFA"></rect><rect x="140" y="30" width="30" height="15" fill="#A78BFA"></rect></svg>
+                        <h3 class="font-pixel text-xl text-white">Breakout</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Destroy all bricks and beat the level.</p>
+                        <button onclick="launchGame('breakout')" class="play-button mt-2 font-pixel bg-purple-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+                    
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M40 120 L80 80 L120 100 L160 70" stroke="#fb923c" stroke-width="4" fill="none"></path><circle cx="60" cy="110" r="10" fill="#fb923c"></circle><circle cx="140" cy="110" r="10" fill="#fb923c"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Bike Racing</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Wheelies, jumps, adrenaline — feel the speed.</p>
+                        <button onclick="launchGame('bikerace')" class="play-button mt-2 font-pixel bg-orange-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+                    
+                    <div class="game-card glass-effect rounded-2xl p-4 flex flex-col items-center">
+                        <svg viewBox="0 0 200 150" class="game-card-image"><path d="M100 20 L130 50 L100 80 L70 50 Z" fill="#f43f5e"></path><path d="M50 70 L80 100 L50 130 L20 100 Z" fill="#3b82f6"></path><circle cx="100" cy="100" r="10" fill="#facc15"></circle></svg>
+                        <h3 class="font-pixel text-xl text-white">Temple Run</h3>
+                        <p class="text-gray-400 text-sm flex-grow">Run, jump, and slide to survive!</p>
+                        <button onclick="launchGame('templerun')" class="play-button mt-2 font-pixel bg-rose-500 text-white py-2 px-4 rounded-lg hover:scale-105 transition duration-300">Play</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20">
+            <div class="container mx-auto px-6">
+                <h2 class="font-pixel text-3xl md:text-4xl text-center text-white neon-text-blue">About LEVELUP Arcade</h2>
+                <div class="mt-10 max-w-4xl mx-auto glass-effect rounded-2xl p-6 space-y-4 text-gray-300 text-center">
+                    <p>LEVELUP Arcade is your one-stop retro gaming hub. We've recreated the classics with a modern, smooth feel. No downloads, just pure, instant fun. Ready to play?</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 bg-black bg-opacity-20">
+            <div class="container mx-auto px-6">
+                <h2 class="font-pixel text-3xl md:text-4xl text-center text-white neon-text-pink">Get In Touch</h2>
+                <div class="mt-10 max-w-2xl mx-auto">
+                    <form action="https://formspree.io/f/mzzjggoj" method="POST" class="space-y-6">
+                        <input type="text" name="name" placeholder="Your Name" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white">
+                        <input type="email" name="email" placeholder="Your Email" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white">
+                        <textarea name="message" placeholder="Your Message" rows="5" class="contact-input w-full p-4 rounded-lg focus:outline-none text-white"></textarea>
+                        <button type="submit" class="w-full font-pixel bg-pink-500 text-white py-3 px-6 rounded-lg hover:bg-pink-600 transition duration-300 transform hover:scale-105">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 text-center">
+        <p class="footer-text">Created with love by "Shaik Suleman"</p>
+    </footer>
+</div>
+
+
+<!-- Fullscreen Game View -->
+<div id="game-view" class="hidden fixed inset-0 bg-black z-50 flex flex-col">
+    <div class="flex-shrink-0 flex justify-between items-center p-4">
+        <h2 id="game-title" class="font-pixel text-lg md:text-2xl text-white"></h2>
+        <div id="score-display" class="font-pixel text-base md:text-lg text-white"></div>
+        <button id="exit-button" class="font-pixel bg-red-500 text-white py-2 px-4 rounded-lg text-sm md:text-base">Exit</button>
+    </div>
+
+    <div id="game-viewport" class="flex-grow bg-gray-900 relative flex items-center justify-center overflow-hidden">
+         <p id="game-message" class="hidden absolute font-pixel text-2xl text-yellow-400 z-10"></p>
+         <div id="mobile-controls-container" class="absolute bottom-4 left-4 right-4 flex justify-between items-end md:hidden z-20">
+            <div id="mobile-controls-left" class="pointer-events-auto"></div>
+            <div id="mobile-controls-right" class="pointer-events-auto"></div>
+         </div>
+    </div>
+
+    <div class="flex-shrink-0 p-4 flex justify-center items-center">
+        <div id="game-buttons" class="flex items-center space-x-4">
+            <button id="restart-button" class="font-pixel bg-cyan-500 text-white py-2 px-4 rounded-lg">Restart</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // --- UI Elements ---
+    const loginPage = document.getElementById('login-page');
+    const playerNameInput = document.getElementById('player-name');
+    const startGameBtn = document.getElementById('start-game-btn');
+    const siteWrapper = document.getElementById('site-wrapper');
+    const welcomeMessageContainer = document.getElementById('welcome-message');
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    // Game View elements
+    const gameView = document.getElementById('game-view');
+    const gameTitle = document.getElementById('game-title');
+    const gameViewport = document.getElementById('game-viewport');
+    const gameMessage = document.getElementById('game-message');
+    const scoreDisplay = document.getElementById('score-display');
+    const restartButton = document.getElementById('restart-button');
+    const gameButtons = document.getElementById('game-buttons');
+    const exitButton = document.getElementById('exit-button');
+    const mobileControlsContainer = document.getElementById('mobile-controls-container');
+    const mobileControlsLeft = document.getElementById('mobile-controls-left');
+    const mobileControlsRight = document.getElementById('mobile-controls-right');
+
+
+    // --- Game State ---
+    let activeGame = null;
+    let gameLoopInterval = null;
+    let eventListeners = [];
+
+    // --- Login Logic ---
+    startGameBtn.addEventListener('click', () => {
+        const playerName = playerNameInput.value.trim();
+        if (playerName) {
+            loginPage.classList.add('hidden');
+            siteWrapper.classList.remove('hidden');
+            welcomeMessageContainer.innerHTML = `<h2 class="font-pixel text-2xl text-white neon-text-blue">Welcome, ${playerName}!</h2>`;
+        } else {
+            playerNameInput.placeholder = "Please enter a name!";
+            playerNameInput.classList.add('border-red-500', 'border-2');
+        }
+    });
+
+    playerNameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            startGameBtn.click();
+        }
+    });
+
+    // --- Helper Functions ---
+    function showGameMessage(message, duration = 1500) {
+        gameMessage.textContent = message;
+        gameMessage.classList.remove('hidden');
+        setTimeout(() => {
+            if (gameMessage.textContent === message) {
+                gameMessage.classList.add('hidden');
+            }
+        }, duration);
+    }
+
+    // --- Mobile Menu ---
+    mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+    document.querySelectorAll('#mobile-menu a').forEach(link => link.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+    // --- Game Launcher ---
+    function launchGame(gameId) {
+        cleanup();
+        
+        siteWrapper.classList.add('hidden');
+        gameView.classList.remove('hidden');
+
+        const gameMap = {
+            'snake': { name: "Snake", class: SnakeGame },
+            'tictactoe': { name: "Tic Tac Toe", class: TicTacToeGame },
+            'bubble': { name: "Bubble Shooter", class: BubbleShooterGame },
+            'car': { name: "Car Racing", class: CarRacingGame },
+            'pong': { name: "Pong", class: PongGame },
+            'breakout': { name: "Breakout", class: BreakoutGame },
+            'bikerace': { name: "Bike Racing", class: BikeRacingGame },
+            'templerun': { name: "Temple Run", class: TempleRunGame },
+        };
+
+        if (gameMap[gameId]) {
+            const gameInfo = gameMap[gameId];
+            gameTitle.textContent = gameInfo.name;
+            
+            activeGame = new gameInfo.class();
+            activeGame.init();
+        }
+    }
+    
+    // --- Game Cleanup & Controls ---
+    function closeGame() {
+        gameView.classList.add('hidden');
+        siteWrapper.classList.remove('hidden');
+        cleanup();
+    }
+    
+    function cleanup() {
+        clearInterval(gameLoopInterval);
+        eventListeners.forEach(({ target, type, listener }) => target.removeEventListener(type, listener));
+        eventListeners = [];
+        const canvas = gameViewport.querySelector('canvas');
+        if(canvas) gameViewport.removeChild(canvas);
+        mobileControlsLeft.innerHTML = ''; 
+        mobileControlsRight.innerHTML = '';
+        gameMessage.classList.add('hidden');
+        scoreDisplay.textContent = '';
+        activeGame = null;
+    }
+
+    function addListener(target, type, listener) {
+        target.addEventListener(type, listener);
+        eventListeners.push({ target, type, listener });
+    }
+
+    restartButton.addEventListener('click', () => {
+        if (activeGame && typeof activeGame.init === 'function') {
+            const gameIdToRestart = activeGame.id;
+            cleanup();
+            launchGame(gameIdToRestart);
+        }
+    });
+    exitButton.addEventListener('click', closeGame);
+
+    // --- Base Game Class ---
+    class Game {
+        constructor(id) {
+            this.id = id;
+            this.canvas = document.createElement('canvas');
+            this.ctx = this.canvas.getContext('2d');
+            const existingCanvas = gameViewport.querySelector('canvas');
+            if (existingCanvas) {
+                gameViewport.removeChild(existingCanvas);
+            }
+            gameViewport.insertBefore(this.canvas, gameViewport.firstChild);
+            this.resizeCanvas();
+            this.gameOver = false;
+            this.resizeListener = () => this.resizeCanvas();
+            addListener(window, 'resize', this.resizeListener);
+        }
+        resizeCanvas() {
+            const viewportRect = gameViewport.getBoundingClientRect();
+            this.canvas.width = viewportRect.width;
+            this.canvas.height = viewportRect.height;
+             if (typeof this.init === 'function' && activeGame === this) {
+                this.init(true); // Pass a flag to indicate it's a resize event
+            }
+        }
+        endGame(message) {
+            this.gameOver = true;
+            clearInterval(gameLoopInterval);
+            gameMessage.textContent = message;
+            gameMessage.classList.remove('hidden');
+        }
+    }
+    
+    // ==================
+    // === SNAKE GAME ===
+    // ==================
+    class SnakeGame extends Game {
+        constructor() { super('snake'); }
+        init(isResize = false) {
+            if (!isResize) {
+                this.direction = 'right';
+                this.score = 0;
+                this.level = 1;
+                this.speed = 120;
+            }
+            this.gridSize = 20;
+            this.canvas.width -= this.canvas.width % this.gridSize;
+            this.canvas.height -= this.canvas.height % this.gridSize;
+            this.snake = [{ x: Math.floor(this.canvas.width / this.gridSize / 2), y: Math.floor(this.canvas.height / this.gridSize / 2) }];
+            scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+            this.placeFood();
+            this.setupControls();
+            clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(() => this.loop(), this.speed);
+        }
+        setupControls() {
+            const changeDir = (newDir) => {
+                if(this.gameOver) return;
+                const opposite = { 'up': 'down', 'down': 'up', 'left': 'right', 'right': 'left' };
+                if (this.direction !== opposite[newDir]) {
+                    this.direction = newDir;
+                }
+            };
+            addListener(document, 'keydown', e => {
+                const keyDir = { 'ArrowUp': 'up', 'ArrowDown': 'down', 'ArrowLeft': 'left', 'ArrowRight': 'right' };
+                if (keyDir[e.key]) { e.preventDefault(); changeDir(keyDir[e.key]); }
+            });
+            mobileControlsLeft.innerHTML = `<div class="grid grid-cols-3 gap-2 w-48 opacity-75"><div></div>
+                <button class="mobile-control-btn" data-dir="up">▲</button><div></div>
+                <button class="mobile-control-btn" data-dir="left">◄</button><div></div>
+                <button class="mobile-control-btn" data-dir="right">►</button><div></div>
+                <button class="mobile-control-btn" data-dir="down">▼</button><div></div></div>`;
+            document.querySelectorAll('#mobile-controls-left .mobile-control-btn').forEach(b => addListener(b, 'click', () => changeDir(b.dataset.dir)));
+        }
+        loop() { if (!this.gameOver) { this.update(); this.draw(); } }
+        update() {
+            const head = { ...this.snake[0] };
+            if (this.direction === 'right') head.x++; else if (this.direction === 'left') head.x--;
+            if (this.direction === 'up') head.y--; else if (this.direction === 'down') head.y++;
+            if (head.x < 0 || head.x >= this.canvas.width / this.gridSize || head.y < 0 || head.y >= this.canvas.height / this.gridSize) return this.endGame("GAME OVER");
+            for (let i = 1; i < this.snake.length; i++) if (head.x === this.snake[i].x && head.y === this.snake[i].y) return this.endGame("GAME OVER");
+            this.snake.unshift(head);
+            if (head.x === this.food.x && head.y === this.food.y) {
+                this.score++;
+                if (this.score > 0 && this.score % 5 === 0) {
+                    this.level++;
+                    this.speed = Math.max(40, this.speed - 10);
+                    clearInterval(gameLoopInterval);
+                    gameLoopInterval = setInterval(() => this.loop(), this.speed);
+                    showGameMessage(`LEVEL ${this.level}!`);
+                }
+                scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+                this.placeFood();
+            } else {
+                this.snake.pop();
+            }
+        }
+        draw() {
+            this.ctx.fillStyle = '#1a1a1a'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.snake.forEach((seg, i) => {
+                this.ctx.fillStyle = i === 0 ? '#33ff33' : '#00ff00';
+                this.ctx.fillRect(seg.x * this.gridSize, seg.y * this.gridSize, this.gridSize - 1, this.gridSize - 1);
+            });
+            this.ctx.fillStyle = '#ff00bf'; this.ctx.beginPath(); this.ctx.arc(this.food.x * this.gridSize + this.gridSize / 2, this.food.y * this.gridSize + this.gridSize / 2, this.gridSize/2 - 1, 0, 2*Math.PI); this.ctx.fill();
+        }
+        placeFood() {
+            this.food = { x: Math.floor(Math.random() * (this.canvas.width / this.gridSize)), y: Math.floor(Math.random() * (this.canvas.height / this.gridSize)) };
+            if (this.snake.some(seg => seg.x === this.food.x && seg.y === this.food.y)) this.placeFood();
+        }
+    }
+    
+    // =======================
+    // === Tic Tac Toe GAME (3x3) ===
+    // =======================
+    class TicTacToeGame extends Game {
+        constructor() { super('tictactoe'); }
+        init(isResize = false) {
+             if (!isResize) {
+                this.board = Array(9).fill(null);
+                this.currentPlayer = 'X';
+             }
+            this.gridSize = 3;
+            this.cellSize = Math.min(this.canvas.width, this.canvas.height) / this.gridSize;
+            this.canvas.width = this.cellSize * this.gridSize;
+            this.canvas.height = this.cellSize * this.gridSize;
+            scoreDisplay.textContent = `Player ${this.currentPlayer}'s Turn`;
+            this.setupControls();
+            this.draw();
+        }
+        setupControls() {
+            addListener(this.canvas, 'click', e => {
+                if (this.gameOver) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const col = Math.floor(x / this.cellSize);
+                const row = Math.floor(y / this.cellSize);
+                const index = row * this.gridSize + col;
+                if (this.board[index] === null) {
+                    this.board[index] = this.currentPlayer;
+                    if (this.checkWinner()) {
+                        scoreDisplay.textContent = ``;
+                        this.endGame(`Player ${this.currentPlayer} Wins!`);
+                    } else if (!this.board.includes(null)) {
+                        scoreDisplay.textContent = ``;
+                        this.endGame("It's a Draw!");
+                    } else {
+                        this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+                        scoreDisplay.textContent = `Player ${this.currentPlayer}'s Turn`;
+                    }
+                    this.draw();
+                }
+            });
+        }
+        checkWinner() {
+            const lines = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6] ];
+            for (let i = 0; i < lines.length; i++) {
+                const [a, b, c] = lines[i];
+                if (this.board[a] && this.board[a] === this.board[b] && this.board[a] === this.board[c]) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.strokeStyle = '#fff'; this.ctx.lineWidth = 4;
+            for (let i = 1; i < this.gridSize; i++) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(i * this.cellSize, 0); this.ctx.lineTo(i * this.cellSize, this.canvas.height);
+                this.ctx.moveTo(0, i * this.cellSize); this.ctx.lineTo(this.canvas.width, i * this.cellSize);
+                this.ctx.stroke();
+            }
+            const pieceSize = this.cellSize * 0.25;
+            this.board.forEach((val, i) => {
+                const x = (i % this.gridSize) * this.cellSize + this.cellSize / 2;
+                const y = Math.floor(i / this.gridSize) * this.cellSize + this.cellSize / 2;
+                if (val === 'X') {
+                    this.ctx.strokeStyle = '#fff'; this.ctx.lineWidth = 5;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x - pieceSize, y - pieceSize); this.ctx.lineTo(x + pieceSize, y + pieceSize);
+                    this.ctx.moveTo(x + pieceSize, y - pieceSize); this.ctx.lineTo(x - pieceSize, y + pieceSize);
+                    this.ctx.stroke();
+                } else if (val === 'O') {
+                    this.ctx.strokeStyle = '#00ffff'; this.ctx.lineWidth = 5;
+                    this.ctx.beginPath(); this.ctx.arc(x, y, pieceSize, 0, Math.PI * 2); this.ctx.stroke();
+                }
+            });
+        }
+    }
+    
+    // ==========================
+    // === BUBBLE SHOOTER GAME ===
+    // ==========================
+    class BubbleShooterGame extends Game {
+        constructor() { super('bubble'); }
+        init(isResize = false) {
+            this.COLS = 16; this.ROWS = 14;
+            this.bubbleRadius = this.canvas.width / (this.COLS * 2);
+            this.canvas.height = this.bubbleRadius * 2 * (this.ROWS + 1.5);
+            this.launcher = { x: this.canvas.width / 2, y: this.canvas.height - this.bubbleRadius };
+            if (!isResize) {
+                this.grid = Array(this.ROWS).fill(0).map(() => Array(this.COLS).fill(null));
+                this.colors = ['#ef4444', '#3b82f6', '#22c55e', '#facc15', '#a855f7'];
+                this.currentBubble = null; this.nextBubble = null; this.shotBubble = null;
+                this.aimAngle = -Math.PI / 2;
+                this.score = 0; this.misses = 0; this.maxMisses = 5;
+                this.generateInitialGrid(); this.loadNextBubbles();
+            }
+            scoreDisplay.textContent = `SCORE: ${this.score}`;
+            this.setupControls();
+            clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(() => this.loop(), 1000 / 60);
+        }
+        generateInitialGrid() {
+            for (let r = 0; r < 5; r++) {
+                for (let c = 0; c < this.COLS - (r % 2); c++) {
+                    this.grid[r][c] = { color: this.colors[Math.floor(Math.random() * this.colors.length)], r, c };
+                }
+            }
+        }
+        getAvailableColors() {
+            const activeColors = new Set();
+            this.grid.forEach(row => row.forEach(bubble => {
+                if(bubble) activeColors.add(bubble.color);
+            }));
+            return activeColors.size > 0 ? Array.from(activeColors) : this.colors;
+        }
+        loadNextBubbles() {
+            const available = this.getAvailableColors();
+            this.currentBubble = { color: available[Math.floor(Math.random() * available.length)] };
+            this.nextBubble = { color: available[Math.floor(Math.random() * available.length)] };
+        }
+        setupControls() {
+            const handleAim = (e) => {
+                 if (this.gameOver) return;
+                const rect = this.canvas.getBoundingClientRect();
+                const clientX = e.clientX || e.touches[0].clientX;
+                const clientY = e.clientY || e.touches[0].clientY;
+                const mouseX = clientX - rect.left;
+                const mouseY = clientY - rect.top;
+                this.aimAngle = Math.atan2(mouseY - this.launcher.y, mouseX - this.launcher.x);
+            }
+             const handleShoot = () => {
+                if (this.gameOver || this.shotBubble) return;
+                this.shotBubble = {
+                    x: this.launcher.x, y: this.launcher.y,
+                    color: this.currentBubble.color,
+                    dx: Math.cos(this.aimAngle) * 10,
+                    dy: Math.sin(this.aimAngle) * 10,
+                };
+                this.loadNextBubbles();
+            };
+
+            addListener(this.canvas, 'mousemove', handleAim);
+            addListener(this.canvas, 'touchmove', handleAim);
+            addListener(this.canvas, 'click', handleShoot);
+            addListener(this.canvas, 'touchend', handleShoot);
+        }
+        loop() { if (!this.gameOver) { this.update(); this.draw(); } }
+        update() {
+            if (!this.shotBubble) return;
+            this.shotBubble.x += this.shotBubble.dx;
+            this.shotBubble.y += this.shotBubble.dy;
+
+            if (this.shotBubble.x - this.bubbleRadius < 0 || this.shotBubble.x + this.bubbleRadius > this.canvas.width) {
+                this.shotBubble.dx *= -1;
+            }
+
+            if (this.shotBubble.y - this.bubbleRadius < 0) {
+                this.snapBubble();
+            } else {
+                for(let r=0; r < this.ROWS; r++) {
+                    for(let c=0; c < this.COLS; c++) {
+                        if(this.grid[r][c]) {
+                            const bubbleX = c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
+                            const bubbleY = r * this.bubbleRadius * 1.75 + this.bubbleRadius;
+                            const dx = this.shotBubble.x - bubbleX;
+                            const dy = this.shotBubble.y - bubbleY;
+                            const dist = Math.sqrt(dx*dx + dy*dy);
+                            if(dist < this.bubbleRadius * 2) {
+                                this.snapBubble();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        snapBubble() {
+            let closest = { r: -1, c: -1, dist: Infinity };
+            for(let r=0; r < this.ROWS; r++) {
+                for(let c=0; c < this.COLS - (r % 2); c++) {
+                    if(!this.grid[r][c]) {
+                        const cellX = c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
+                        const cellY = r * this.bubbleRadius * 1.75 + this.bubbleRadius;
+                        const dx = this.shotBubble.x - cellX;
+                        const dy = this.shotBubble.y - cellY;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if(dist < closest.dist) {
+                            closest = { r, c, dist };
+                        }
+                    }
+                }
+            }
+            
+            if(closest.r > -1) {
+                this.grid[closest.r][closest.c] = { color: this.shotBubble.color, r: closest.r, c: closest.c };
+                this.shotBubble = null;
+                const popped = this.checkMatches(closest.r, closest.c);
+                if (popped) {
+                    this.checkFloating();
+                    this.misses = 0;
+                } else {
+                    this.misses++;
+                    if(this.misses >= this.maxMisses) {
+                        this.addNewRow();
+                        this.misses = 0;
+                    }
+                }
+                this.checkGameOver();
+            }
+        }
+        checkMatches(r, c) {
+            const targetColor = this.grid[r][c].color;
+            const toCheck = [{r, c}];
+            const checked = new Set([`${r},${c}`]);
+            const matches = [{r, c}];
+
+            while(toCheck.length > 0) {
+                const {r: cr, c: cc} = toCheck.shift();
+                const neighbors = this.getNeighbors(cr, cc);
+                for(const n of neighbors) {
+                    if(!checked.has(`${n.r},${n.c}`) && this.grid[n.r]?.[n.c] && this.grid[n.r][n.c].color === targetColor) {
+                        checked.add(`${n.r},${n.c}`);
+                        toCheck.push(n);
+                        matches.push(n);
+                    }
+                }
+            }
+            if(matches.length >= 3) {
+                matches.forEach(m => this.grid[m.r][m.c] = null);
+                this.score += matches.length * 10;
+                scoreDisplay.textContent = `SCORE: ${this.score}`;
+                return true;
+            }
+            return false;
+        }
+        checkFloating() {
+            const connected = new Set();
+            const toCheck = [];
+            for (let c = 0; c < this.COLS; c++) {
+                if (this.grid[0][c]) {
+                    toCheck.push({r: 0, c});
+                    connected.add(`0,${c}`);
+                }
+            }
+            
+            while (toCheck.length > 0) {
+                const {r, c} = toCheck.shift();
+                const neighbors = this.getNeighbors(r, c);
+                for (const n of neighbors) {
+                    if (!connected.has(`${n.r},${n.c}`) && this.grid[n.r]?.[n.c]) {
+                        connected.add(`${n.r},${n.c}`);
+                        toCheck.push(n);
+                    }
+                }
+            }
+
+            let dropped = 0;
+            for (let r = 0; r < this.ROWS; r++) {
+                for (let c = 0; c < this.COLS; c++) {
+                    if (this.grid[r][c] && !connected.has(`${r},${c}`)) {
+                        this.grid[r][c] = null;
+                        dropped++;
+                    }
+                }
+            }
+            this.score += dropped * 20;
+            scoreDisplay.textContent = `SCORE: ${this.score}`;
+        }
+        addNewRow() {
+            for(let r=this.ROWS - 1; r > 0; r--) {
+                this.grid[r] = this.grid[r-1];
+                this.grid[r].forEach(b => { if(b) b.r = r; });
+            }
+            this.grid[0] = Array(this.COLS).fill(null);
+             for (let c = 0; c < this.COLS; c++) {
+                this.grid[0][c] = { color: this.colors[Math.floor(Math.random() * this.colors.length)], r: 0, c };
+            }
+        }
+        getNeighbors(r, c) {
+             const isEven = r % 2 === 0;
+             const neighbors = [
+                {r: r, c: c - 1}, {r: r, c: c + 1}, // Left, Right
+                {r: r - 1, c: c - (isEven ? 1:0)}, {r: r - 1, c: c + (isEven ? 0:1)}, // Top-left, Top-right
+                {r: r + 1, c: c - (isEven ? 1:0)}, {r: r + 1, c: c + (isEven ? 0:1)}  // Bottom-left, Bottom-right
+             ];
+             return neighbors.filter(n => n.r >= 0 && n.r < this.ROWS && n.c >= 0 && n.c < this.COLS - (n.r % 2));
+        }
+        checkGameOver() {
+             for (let c = 0; c < this.COLS; c++) {
+                if (this.grid[this.ROWS-1][c]) {
+                    return this.endGame("GAME OVER");
+                }
+            }
+        }
+        draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.grid.forEach((row, r) => {
+                row.forEach((bubble, c) => {
+                    if (bubble) {
+                        const x = c * this.bubbleRadius * 2 + (r % 2 ? this.bubbleRadius : 0) + this.bubbleRadius;
+                        const y = r * this.bubbleRadius * 1.75 + this.bubbleRadius;
+                        this.ctx.fillStyle = bubble.color;
+                        this.ctx.beginPath();
+                        this.ctx.arc(x, y, this.bubbleRadius - 1, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                });
+            });
+            const r = this.bubbleRadius;
+            this.ctx.fillStyle = this.currentBubble.color;
+            this.ctx.beginPath(); this.ctx.arc(this.launcher.x, this.launcher.y, r, 0, Math.PI*2); this.ctx.fill();
+            this.ctx.fillStyle = this.nextBubble.color;
+            this.ctx.beginPath(); this.ctx.arc(this.launcher.x - r * 3, this.launcher.y, r * 0.7, 0, Math.PI*2); this.ctx.fill();
+            
+            this.ctx.strokeStyle = 'white'; this.ctx.lineWidth = 2;
+            this.ctx.beginPath(); this.ctx.moveTo(this.launcher.x, this.launcher.y);
+            this.ctx.lineTo(this.launcher.x + Math.cos(this.aimAngle) * 50, this.launcher.y + Math.sin(this.aimAngle) * 50);
+            this.ctx.stroke();
+
+            if(this.shotBubble) {
+                this.ctx.fillStyle = this.shotBubble.color;
+                this.ctx.beginPath();
+                this.ctx.arc(this.shotBubble.x, this.shotBubble.y, r, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+
+            this.ctx.strokeStyle = '#ff00bf';
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, (this.ROWS-1) * this.bubbleRadius * 1.75 + this.bubbleRadius);
+            this.ctx.lineTo(this.canvas.width, (this.ROWS-1) * this.bubbleRadius * 1.75 + this.bubbleRadius);
+            this.ctx.stroke();
+        }
+    }
+
+
+    // ======================
+    // === CAR RACING GAME ===
+    // ======================
+    class CarRacingGame extends Game {
+        constructor() { super('car'); }
+        init(isResize = false) {
+             if (!isResize) {
+                this.score = 0; this.level = 1; this.baseSpeed = 3; this.keys = {};
+             }
+            this.player = { x: this.canvas.width / 2 - 20, y: this.canvas.height - 80, width: 40, height: 60 };
+            this.enemies = []; this.roadLines = [];
+            this.isBoosting = false;
+            scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+            this.setupControls();
+            clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(() => this.loop(), 1000 / 60);
+        }
+        setupControls() {
+            addListener(document, 'keydown', e => { e.preventDefault(); this.keys[e.key] = true; });
+            addListener(document, 'keyup', e => { e.preventDefault(); this.keys[e.key] = false; });
+
+            mobileControlsLeft.innerHTML = `<div class="flex items-center space-x-4 opacity-75">
+                <button class="mobile-control-btn" data-key="ArrowLeft">◄</button>
+                <button class="mobile-control-btn" data-key="ArrowRight">►</button></div>`;
+            mobileControlsRight.innerHTML = `<div class="opacity-75">
+                <button class="mobile-control-btn" data-key="Shift">🚀</button></div>`;
+
+            document.querySelectorAll('#mobile-controls-container .mobile-control-btn').forEach(b => {
+                addListener(b, 'touchstart', (e) => { e.preventDefault(); this.keys[b.dataset.key] = true; });
+                addListener(b, 'touchend', (e) => { e.preventDefault(); this.keys[b.dataset.key] = false; });
+            });
+        }
+        loop() { if (!this.gameOver) { this.update(); this.draw(); } }
+        update() {
+            if (this.keys['ArrowLeft'] && this.player.x > 0) this.player.x -= 5;
+            if (this.keys['ArrowRight'] && this.player.x < this.canvas.width - this.player.width) this.player.x += 5;
+            
+            this.isBoosting = this.keys['Shift'];
+            const currentSpeed = this.isBoosting ? this.baseSpeed * 2 : this.baseSpeed;
+
+            if (Math.random() < 0.05) this.enemies.push({ x: Math.random() * (this.canvas.width - 50), y: -50, width: 40, height: 60 });
+            this.enemies.forEach(e => e.y += currentSpeed);
+            this.enemies = this.enemies.filter(e => e.y < this.canvas.height);
+            this.roadLines.forEach(l => l.y += currentSpeed);
+            if (this.roadLines.length === 0 || this.roadLines[this.roadLines.length - 1].y > 100) this.roadLines.push({ x: this.canvas.width / 2 - 5, y: -100, width: 10, height: 50 });
+            this.roadLines = this.roadLines.filter(l => l.y < this.canvas.height);
+            this.enemies.forEach(e => {
+                if (this.player.x < e.x + e.width && this.player.x + this.player.width > e.x && this.player.y < e.y + e.height && this.player.y + this.player.height > e.y) this.endGame("GAME OVER");
+            });
+            this.score++;
+            if (this.score > 0 && this.score % 500 === 0 && Math.floor(this.score/500)+1 > this.level) {
+                this.level++;
+                this.baseSpeed += 0.5;
+                showGameMessage(`LEVEL ${this.level}!`);
+            }
+            scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+        }
+        drawCar(x, y, width, height, color, cabinColor) {
+             // Body
+            this.ctx.fillStyle = color; 
+            this.ctx.fillRect(x, y, width, height);
+            // Cabin
+            this.ctx.fillStyle = cabinColor;
+            this.ctx.fillRect(x + width * 0.15, y + height * 0.1, width * 0.7, height * 0.4);
+        }
+        draw() {
+            this.ctx.fillStyle = '#4a4a4a'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = 'white'; this.roadLines.forEach(l => this.ctx.fillRect(l.x, l.y, l.width, l.height));
+            
+            const p = this.player;
+            const carColor = this.isBoosting ? '#ff8c00' : '#ffff00';
+            this.drawCar(p.x, p.y, p.width, p.height, carColor, '#a1a1aa');
+
+            this.enemies.forEach(e => this.drawCar(e.x, e.y, e.width, e.height, 'red', '#404040'));
+        }
+    }
+    
+    // ================
+    // === PONG GAME ===
+    // ================
+    class PongGame extends Game {
+        constructor() { super('pong'); }
+        init(isResize = false) {
+             if(!isResize) {
+                this.player = { score: 0 };
+                this.ai = { score: 0 };
+                this.ball = { dx: 5, dy: 5 };
+             }
+            this.paddleHeight = 100; this.paddleWidth = 10;
+            this.player.x = 10;
+            this.player.y = this.canvas.height / 2 - 50;
+            this.player.width = this.paddleWidth;
+            this.player.height = this.paddleHeight;
+
+            this.ai.x = this.canvas.width - 20;
+            this.ai.y = this.canvas.height / 2 - 50;
+            this.ai.width = this.paddleWidth;
+            this.ai.height = this.paddleHeight;
+
+            this.ball.x = this.canvas.width / 2;
+            this.ball.y = this.canvas.height / 2;
+            this.ball.radius = 10;
+            
+            scoreDisplay.textContent = `${this.player.score} - ${this.ai.score}`;
+            this.setupControls();
+            clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(() => this.loop(), 1000/60);
+        }
+        setupControls() {
+            const movePaddle = (e) => {
+                const rect = this.canvas.getBoundingClientRect();
+                const clientY = e.clientY || e.touches[0].clientY;
+                this.player.y = clientY - rect.top - this.player.height / 2;
+            }
+            addListener(this.canvas, 'mousemove', movePaddle);
+            addListener(this.canvas, 'touchmove', movePaddle);
+        }
+        loop() { if (!this.gameOver) { this.update(); this.draw(); } }
+        update() {
+            this.ball.x += this.ball.dx; this.ball.y += this.ball.dy;
+            if (this.ball.y + this.ball.radius > this.canvas.height || this.ball.y - this.ball.radius < 0) this.ball.dy *= -1;
+            if (this.ball.x - this.ball.radius < this.player.x + this.player.width && this.ball.y > this.player.y && this.ball.y < this.player.y + this.player.height) this.ball.dx *= -1;
+            if (this.ball.x + this.ball.radius > this.ai.x && this.ball.y > this.ai.y && this.ball.y < this.ai.y + this.ai.height) this.ball.dx *= -1;
+            if (this.ball.x < 0) { this.ai.score++; this.reset(); }
+            if (this.ball.x > this.canvas.width) { this.player.score++; this.reset(); }
+            this.ai.y += (this.ball.y - (this.ai.y + this.ai.height / 2)) * 0.1;
+            scoreDisplay.textContent = `${this.player.score} - ${this.ai.score}`;
+            if(this.player.score === 5) this.endGame("YOU WIN!");
+            if(this.ai.score === 5) this.endGame("AI WINS!");
+        }
+        reset() {
+            this.ball.x = this.canvas.width / 2; this.ball.y = this.canvas.height / 2;
+            this.ball.dx = -this.ball.dx;
+        }
+        draw() {
+            this.ctx.fillStyle = '#1a1a1a'; this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = '#fff';
+            this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height);
+            this.ctx.fillRect(this.ai.x, this.ai.y, this.ai.width, this.ai.height);
+            this.ctx.beginPath(); this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2); this.ctx.fill();
+        }
+    }
+    
+    // ===================
+    // === BREAKOUT GAME ===
+    // ===================
+    class BreakoutGame extends Game {
+        constructor() { super('breakout'); }
+        init(isResize = false) {
+             if (!isResize) {
+                this.level = 1;
+                this.totalScore = 0;
+             }
+            this.paddle = { height: 15, width: 100, x: this.canvas.width / 2 - 50 };
+            this.ball = { radius: 10, x: this.canvas.width / 2, y: this.canvas.height - 30, dx: 4 + (this.level * 0.5), dy: -4 - (this.level * 0.5) };
+            this.brick = { width: (this.canvas.width / 8) * 0.85, height: 20, padding: 5, offsetTop: 30, offsetLeft: (this.canvas.width * 0.15) / 2 };
+            
+            this.levelScore = 0;
+            this.bricksOnLevel = 0;
+            this.setupBricks(this.level);
+            scoreDisplay.textContent = `SCORE: ${this.totalScore} | LEVEL: ${this.level}`;
+            this.setupControls();
+            clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(() => this.loop(), 20);
+        }
+        setupBricks(level) {
+            this.bricks = [];
+            this.levelScore = 0;
+            this.bricksOnLevel = 0;
+            const brickColumnCount = 8;
+            const brickRowCount = 5 + Math.floor(level / 2);
+            for (let c = 0; c < brickColumnCount; c++) {
+                this.bricks[c] = [];
+                for (let r = 0; r < brickRowCount; r++) {
+                    const pattern = level % 3;
+                    let showBrick = true;
+                    if (pattern === 1 && (c + r) % 2 === 0) showBrick = false;
+                    if (pattern === 2 && c % 2 !== 0) showBrick = false;
+                    
+                    if(showBrick) {
+                        this.bricks[c][r] = { status: 1 };
+                        this.bricksOnLevel++;
+                    } else {
+                        this.bricks[c][r] = { status: 0 };
+                    }
+                }
+            }
+        }
+        setupControls() {
+             const movePaddle = (e) => {
+                const rect = this.canvas.getBoundingClientRect();
+                const clientX = e.clientX || e.touches[0].clientX;
+                const newX = clientX - rect.left;
+                if (newX > this.paddle.width / 2 && newX < this.canvas.width - this.paddle.width / 2) {
+                    this.paddle.x = newX - this.paddle.width / 2;
+                }
+            }
+            addListener(this.canvas, 'mousemove', movePaddle);
+            addListener(this.canvas, 'touchmove', movePaddle);
+        }
+        loop() { if (!this.gameOver) { this.update(); this.draw(); } }
+        update() {
+            if (this.ball.x + this.ball.dx > this.canvas.width - this.ball.radius || this.ball.x + this.ball.dx < this.ball.radius) this.ball.dx *= -1;
+            if (this.ball.y + this.ball.dy < this.ball.radius) this.ball.dy *= -1;
+            else if (this.ball.y + this.ball.dy > this.canvas.height - this.ball.radius) {
+                if (this.ball.x > this.paddle.x && this.ball.x < this.paddle.x + this.paddle.width) this.ball.dy *= -1;
+                else return this.endGame("GAME OVER");
+            }
+            this.ball.x += this.ball.dx; this.ball.y += this.ball.dy;
+            this.collisionDetection();
+        }
+        collisionDetection() {
+            for (let c = 0; c < this.bricks.length; c++) {
+                for (let r = 0; r < this.bricks[c].length; r++) {
+                    let b = this.bricks[c][r];
+                    if (b.status === 1) {
+                        let brickX = (c * (this.brick.width + this.brick.padding)) + this.brick.offsetLeft;
+                        let brickY = (r * (this.brick.height + this.brick.padding)) + this.brick.offsetTop;
+                        if (this.ball.x > brickX && this.ball.x < brickX + this.brick.width && this.ball.y > brickY && this.ball.y < brickY + this.brick.height) {
+                            this.ball.dy *= -1;
+                            b.status = 0;
+                            this.levelScore++;
+                            this.totalScore++;
+                            scoreDisplay.textContent = `SCORE: ${this.totalScore} | LEVEL: ${this.level}`;
+                            if (this.levelScore === this.bricksOnLevel) {
+                                this.level++;
+                                showGameMessage(`LEVEL ${this.level}!`);
+                                setTimeout(() => this.init(true), 1500);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = '#A78BFA';
+            this.ctx.fillRect(this.paddle.x, this.canvas.height - this.paddle.height, this.paddle.width, this.paddle.height);
+            this.ctx.beginPath(); this.ctx.arc(this.ball.x, this.ball.y, this.ball.radius, 0, Math.PI * 2); this.ctx.fill();
+            for (let c = 0; c < this.bricks.length; c++) {
+                for (let r = 0; r < this.bricks[c].length; r++) {
+                    if (this.bricks[c][r].status === 1) {
+                        let brickX = (c * (this.brick.width + this.brick.padding)) + this.brick.offsetLeft;
+                        let brickY = (r * (this.brick.height + this.brick.padding)) + this.brick.offsetTop;
+                        this.ctx.fillStyle = r % 2 === 0 ? "#ff00bf" : "#00ffff";
+                        this.ctx.fillRect(brickX, brickY, this.brick.width, this.brick.height);
+                    }
+                }
+            }
+        }
+    }
+
+    // ======================
+    // === BIKE RACING GAME ===
+    // ======================
+    class BikeRacingGame extends Game {
+        constructor() { super('bikerace'); }
+        init(isResize = false) {
+            if(!isResize) {
+                this.score = 0;
+                this.level = 1;
+                this.baseSpeed = 4;
+                this.keys = {};
+            }
+            this.player = { x: this.canvas.width / 2 - 20, y: this.canvas.height - 80, width: 40, height: 80 };
+            this.obstacles = [];
+            this.roadLines = [];
+            scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+            this.setupControls();
+            clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(() => this.loop(), 1000 / 60);
+        }
+        setupControls() {
+            addListener(document, 'keydown', e => { e.preventDefault(); this.keys[e.key] = true; });
+            addListener(document, 'keyup', e => { e.preventDefault(); this.keys[e.key] = false; });
+
+            mobileControlsLeft.innerHTML = `<div class="flex items-center space-x-4 opacity-75">
+                <button class="mobile-control-btn" data-key="ArrowLeft">◄</button>
+                <button class="mobile-control-btn" data-key="ArrowRight">►</button></div>`;
+            document.querySelectorAll('#mobile-controls-left .mobile-control-btn').forEach(b => {
+                addListener(b, 'touchstart', (e) => { e.preventDefault(); this.keys[b.dataset.key] = true; });
+                addListener(b, 'touchend', (e) => { e.preventDefault(); this.keys[b.dataset.key] = false; });
+            });
+        }
+        loop() { if (!this.gameOver) { this.update(); this.draw(); } }
+        update() {
+            if (this.keys['ArrowLeft'] && this.player.x > 0) this.player.x -= 5;
+            if (this.keys['ArrowRight'] && this.player.x < this.canvas.width - this.player.width) this.player.x += 5;
+
+            if (Math.random() < 0.04) {
+                const width = Math.random() * 50 + 30;
+                this.obstacles.push({ x: Math.random() * (this.canvas.width - width), y: -50, width: width, height: 20 });
+            }
+            this.obstacles.forEach(o => o.y += this.baseSpeed);
+            this.obstacles = this.obstacles.filter(o => o.y < this.canvas.height);
+            this.roadLines.forEach(l => l.y += this.baseSpeed);
+             if (this.roadLines.length === 0 || this.roadLines[this.roadLines.length - 1].y > 100) this.roadLines.push({ x: this.canvas.width / 2 - 5, y: -100, width: 10, height: 50 });
+            this.roadLines = this.roadLines.filter(l => l.y < this.canvas.height);
+            
+            this.obstacles.forEach(o => {
+                if (this.player.x < o.x + o.width && this.player.x + this.player.width > o.x && this.player.y < o.y + o.height && this.player.y + this.player.height > o.y) {
+                    this.endGame("GAME OVER");
+                }
+            });
+            this.score++;
+             if (this.score > 0 && this.score % 500 === 0 && Math.floor(this.score/500) + 1 > this.level) {
+                this.level++;
+                this.baseSpeed += 0.5;
+                showGameMessage(`LEVEL ${this.level}!`);
+            }
+            scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+        }
+        draw() {
+            this.ctx.fillStyle = '#4a4a4a';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.fillStyle = 'white';
+            this.roadLines.forEach(l => this.ctx.fillRect(l.x, l.y, l.width, l.height));
+            
+            this.ctx.fillStyle = '#fb923c';
+            this.ctx.fillRect(this.player.x, this.player.y, this.player.width, this.player.height - 10); // Frame
+            this.ctx.fillStyle = '#27272a';
+            this.ctx.beginPath();
+            this.ctx.arc(this.player.x + 10, this.player.y + this.player.height - 10, 10, 0, Math.PI * 2); // Rear Wheel
+            this.ctx.arc(this.player.x + this.player.width - 10, this.player.y + this.player.height - 10, 10, 0, Math.PI * 2); // Front Wheel
+            this.ctx.fill();
+            
+            this.ctx.fillStyle = '#e11d48';
+            this.obstacles.forEach(o => this.ctx.fillRect(o.x, o.y, o.width, o.height));
+        }
+    }
+
+    // ======================
+    // === TEMPLE RUN GAME ===
+    // ======================
+    class TempleRunGame extends Game {
+        constructor() { super('templerun'); }
+        init(isResize = false) {
+            if(!isResize) {
+                this.score = 0;
+                this.level = 1;
+                this.baseSpeed = 4;
+                this.lanes = [-1, 0, 1];
+                this.player = { lane: 0, isJumping: false, jumpHeight: 0 };
+                this.obstacles = [];
+                this.gaps = [];
+            }
+            this.player.width = 40;
+            this.player.height = 40;
+            this.player.y = this.canvas.height - 100;
+            this.pathWidth = this.canvas.width / 3;
+            this.player.x = this.canvas.width / 2 - this.player.width / 2;
+
+            scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+            this.setupControls();
+            clearInterval(gameLoopInterval);
+            gameLoopInterval = setInterval(() => this.loop(), 1000 / 60);
+        }
+        setupControls() {
+            const move = (dir) => {
+                if(this.gameOver) return;
+                const newLane = this.player.lane + dir;
+                if(newLane >= -1 && newLane <= 1) this.player.lane = newLane;
+            };
+            const jump = () => { if(!this.player.isJumping && !this.gameOver) this.player.isJumping = true; };
+
+            addListener(document, 'keydown', e => {
+                e.preventDefault();
+                if (e.key === 'ArrowLeft') move(-1);
+                else if (e.key === 'ArrowRight') move(1);
+                else if (e.key === 'ArrowUp' || e.key === ' ') jump();
+            });
+
+            mobileControlsLeft.innerHTML = `<div class="flex items-center space-x-4 opacity-75">
+                <button class="mobile-control-btn" data-action="left">◄</button>
+                <button class="mobile-control-btn" data-action="right">►</button></div>`;
+            mobileControlsRight.innerHTML = `<div class="opacity-75">
+                <button class="mobile-control-btn" data-action="jump">▲</button></div>`;
+             document.querySelectorAll('#mobile-controls-container .mobile-control-btn').forEach(b => {
+                addListener(b, 'click', () => {
+                    const action = b.dataset.action;
+                    if (action === 'left') move(-1);
+                    else if (action === 'right') move(1);
+                    else if (action === 'jump') jump();
+                });
+            });
+        }
+        loop() { if (!this.gameOver) { this.update(); this.draw(); } }
+        update() {
+            this.player.x = (this.canvas.width / 2) + (this.player.lane * this.pathWidth) - this.player.width / 2;
+            if(this.player.isJumping) {
+                this.player.jumpHeight += 5;
+                if(this.player.jumpHeight >= 100) this.player.isJumping = false;
+            } else {
+                if(this.player.jumpHeight > 0) this.player.jumpHeight -= 5;
+            }
+
+            if(Math.random() < 0.02) {
+                const lane = this.lanes[Math.floor(Math.random() * 3)];
+                if(Math.random() < 0.5) {
+                    this.gaps.push({ lane, y: -50, height: 80 });
+                } else {
+                    this.obstacles.push({ lane, y: -50, width: 50, height: 50 });
+                }
+            }
+
+            [this.obstacles, this.gaps].forEach(arr => {
+                arr.forEach(item => item.y += this.baseSpeed);
+                arr.filter(item => item.y > this.canvas.height);
+            });
+            
+            let onGap = false;
+            this.gaps.forEach(g => {
+                if (this.player.lane === g.lane && this.player.y + this.player.height > g.y && this.player.y < g.y + g.height) {
+                    onGap = true;
+                }
+            });
+            if(onGap && !this.player.isJumping) return this.endGame("GAME OVER");
+
+            this.obstacles.forEach(o => {
+                 if (this.player.lane === o.lane && this.player.y < o.y + o.height && this.player.y + this.player.height > o.y && this.player.y - this.player.jumpHeight < o.y + o.height) {
+                     return this.endGame("GAME OVER");
+                 }
+            });
+
+            this.score++;
+            if (this.score > 0 && this.score % 1000 === 0 && Math.floor(this.score/1000)+1 > this.level) {
+                this.level++;
+                this.baseSpeed += 0.5;
+                showGameMessage(`LEVEL ${this.level}!`);
+            }
+            scoreDisplay.textContent = `SCORE: ${this.score} | LEVEL: ${this.level}`;
+        }
+        draw() {
+            this.ctx.fillStyle = '#262626';
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            for(let i = -1; i <= 1; i++) {
+                this.ctx.fillStyle = '#404040';
+                const laneX = (this.canvas.width / 2) + (i * this.pathWidth) - this.pathWidth / 2;
+                this.ctx.fillRect(laneX, 0, this.pathWidth - 10, this.canvas.height);
+            }
+
+            this.gaps.forEach(g => {
+                const laneX = (this.canvas.width / 2) + (g.lane * this.pathWidth) - this.pathWidth / 2;
+                this.ctx.fillStyle = '#262626';
+                this.ctx.fillRect(laneX, g.y, this.pathWidth - 10, g.height);
+            });
+
+            this.obstacles.forEach(o => {
+                const laneX = (this.canvas.width / 2) + (o.lane * this.pathWidth) - o.width / 2;
+                this.ctx.fillStyle = '#ef4444';
+                this.ctx.fillRect(laneX, o.y, o.width, o.height);
+            });
+
+            this.ctx.fillStyle = '#facc15';
+            this.ctx.fillRect(this.player.x, this.player.y - this.player.jumpHeight, this.player.width, this.player.height);
+        }
+    }
+</script>
+</body>
+</html>
+
